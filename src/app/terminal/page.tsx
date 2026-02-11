@@ -1,13 +1,14 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { ChartView } from "@/components/terminal/chart-view"
 import { AIPanel } from "@/components/terminal/ai-panel"
 import { TokenSearch } from "@/components/terminal/token-search"
 import { TokenMetrics } from "@/components/terminal/token-metrics"
+import { Loader2 } from "lucide-react"
 
-export default function TerminalPage() {
+function TerminalContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const tokenAddressParam = searchParams.get("token")
@@ -85,5 +86,17 @@ export default function TerminalPage() {
                 <AIPanel tokenData={selectedToken} />
             </div>
         </div>
+    )
+}
+
+export default function TerminalPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center min-h-screen">
+                <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+            </div>
+        }>
+            <TerminalContent />
+        </Suspense>
     )
 }
