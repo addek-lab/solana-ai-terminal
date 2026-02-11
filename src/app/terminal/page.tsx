@@ -58,26 +58,31 @@ export default function TerminalPage() {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-full min-h-[calc(100vh-100px)]">
-            {/* Chart Area */}
-            <div className="md:col-span-2 bg-card rounded-xl border border-border p-4 shadow-sm relative flex flex-col h-[80vh]">
-                <div className="mb-4">
-                    <TokenSearch onSelect={handleTokenSelect} />
+        <div className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
+            {/* Header: Search Bar */}
+            <div className="w-full max-w-4xl mx-auto">
+                <TokenSearch onSelect={handleTokenSelect} />
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[70vh]">
+
+                {/* Left: Chart (Larger 3/4) */}
+                <div className="lg:col-span-3 bg-card rounded-xl border border-border p-1 shadow-sm overflow-hidden flex flex-col">
+                    <div className="flex-1 bg-background/50 rounded-lg overflow-hidden">
+                        <ChartView pairAddress={selectedToken.pairAddress} />
+                    </div>
                 </div>
-                <div className="flex-1 bg-background/50 rounded-lg overflow-hidden border border-border">
-                    <ChartView pairAddress={selectedToken.pairAddress} />
+
+                {/* Right: Metrics (Smaller 1/4) */}
+                <div className="lg:col-span-1 flex flex-col gap-4">
+                    <TokenMetrics tokenData={selectedToken} />
                 </div>
             </div>
 
-            {/* Sidebar / Analysis */}
-            <div className="md:col-span-1 space-y-6">
-
-                {/* AI Analysis Panel - Now passing Data */}
+            {/* Bottom: AI Analysis (Centered) */}
+            <div className="w-full max-w-4xl mx-auto">
                 <AIPanel tokenData={selectedToken} />
-
-                {/* Metrics Component */}
-                <TokenMetrics tokenData={selectedToken} />
-
             </div>
         </div>
     )

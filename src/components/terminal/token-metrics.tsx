@@ -30,22 +30,24 @@ export function TokenMetrics({ tokenData }: TokenMetricsProps) {
                 <Activity className="w-4 h-4" /> Market Overview
             </h3>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
                 {/* Price */}
-                <div className="p-3 bg-secondary/20 rounded-lg border border-border/50">
-                    <div className="text-muted-foreground text-xs flex items-center gap-1 mb-1">
-                        <DollarSign className="w-3 h-3" /> Price
+                <div className="p-4 bg-secondary/20 rounded-lg border border-border/50 flex justify-between items-center">
+                    <div>
+                        <div className="text-muted-foreground text-xs flex items-center gap-1 mb-1">
+                            <DollarSign className="w-3 h-3" /> Price
+                        </div>
+                        <div className="font-mono font-bold text-xl">
+                            ${price < 0.01 ? price.toFixed(8) : price.toFixed(4)}
+                        </div>
                     </div>
-                    <div className="font-mono font-bold text-lg">
-                        ${price < 0.01 ? price.toFixed(8) : price.toFixed(4)}
-                    </div>
-                    <div className={`text-xs font-medium ${tokenData.priceChange24h >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                        {tokenData.priceChange24h > 0 ? '+' : ''}{tokenData.priceChange24h}% (24h)
+                    <div className={`px-2 py-1 rounded text-xs font-bold ${tokenData.priceChange24h >= 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                        {tokenData.priceChange24h > 0 ? '+' : ''}{tokenData.priceChange24h}%
                     </div>
                 </div>
 
                 {/* Liquidity */}
-                <div className="p-3 bg-secondary/20 rounded-lg border border-border/50">
+                <div className="p-4 bg-secondary/20 rounded-lg border border-border/50">
                     <div className="text-muted-foreground text-xs flex items-center gap-1 mb-1">
                         <Droplets className="w-3 h-3" /> Liquidity
                     </div>
@@ -55,7 +57,7 @@ export function TokenMetrics({ tokenData }: TokenMetricsProps) {
                 </div>
 
                 {/* Market Cap */}
-                <div className="p-3 bg-secondary/20 rounded-lg border border-border/50">
+                <div className="p-4 bg-secondary/20 rounded-lg border border-border/50">
                     <div className="text-muted-foreground text-xs flex items-center gap-1 mb-1">
                         <BarChart3 className="w-3 h-3" /> Mkt Cap
                     </div>
@@ -65,7 +67,7 @@ export function TokenMetrics({ tokenData }: TokenMetricsProps) {
                 </div>
 
                 {/* Volume */}
-                <div className="p-3 bg-secondary/20 rounded-lg border border-border/50">
+                <div className="p-4 bg-secondary/20 rounded-lg border border-border/50">
                     <div className="text-muted-foreground text-xs flex items-center gap-1 mb-1">
                         <Activity className="w-3 h-3" /> 24h Vol
                     </div>

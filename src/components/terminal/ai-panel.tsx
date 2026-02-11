@@ -42,20 +42,22 @@ export function AIPanel({ tokenData }: { tokenData?: any }) {
 
     return (
         <div className="bg-card rounded-xl border border-border p-4 flex flex-col h-[400px]">
-            <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                    <Brain className="w-5 h-5 text-purple-500" />
-                    <h2 className="font-semibold">Gemini 3.0 Analysis</h2>
-                </div>
+            <div className="flex flex-col items-center justify-center mb-4 w-full">
                 {!analysis && (
                     <button
                         onClick={handleAnalyze}
                         disabled={analyzing}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+                        className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-lg font-bold rounded-xl shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 w-full md:w-auto min-w-[300px]"
                     >
-                        {analyzing ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-                        {analyzing ? "Thinking..." : "Analyze Market"}
+                        {analyzing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                        {analyzing ? "AI Analyst Thinking..." : "Analyze Chart & Metrics"}
                     </button>
+                )}
+                {analysis && (
+                    <div className="flex items-center gap-2 mb-2">
+                        <Brain className="w-5 h-5 text-purple-500" />
+                        <h2 className="font-semibold text-lg">AI Trade Setup</h2>
+                    </div>
                 )}
             </div>
 

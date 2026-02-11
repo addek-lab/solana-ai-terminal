@@ -19,12 +19,16 @@ export async function POST(req: NextRequest) {
       - Liquidity: $${liquidity}
       - 24h Volume: $${volume24h}
 
-      Provide a concise 3-bullet point assessment:
-      1. Bullish/Bearish Sentiment based on the 24h change and volume.
-      2. Liquidity Health Check (is it safe to trade?).
-      3. A short-term trading setup or warning.
-
-      Keep it under 100 words.
+      Provide a structured trading plan:
+      
+      1. **Verdict**: BULLISH, BEARISH, or NEUTRAL.
+      2. **Trade Setup**:
+         - **Entry**: Current or wait for dip?
+         - **Stop Loss (SL)**: Specific price level below support.
+         - **Take Profit (TP)**: Specific price target.
+      3. **Liquidity Analysis**: Is $${liquidity} liquidity sufficient for valid price discovery? Is it safe from high slippage?
+      
+      Keep it concise, actionable and under 150 words. Format with bolding for key values.
     `;
 
         try {
