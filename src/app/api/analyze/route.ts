@@ -1,9 +1,9 @@
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, Schema } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-const schema = {
+const schema: Schema = {
     description: "Meme Coin Technical Analysis Trading Plan",
     type: SchemaType.OBJECT,
     properties: {
@@ -47,7 +47,7 @@ const schema = {
         }
     },
     required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning"]
-} as const;
+};
 
 export async function POST(req: NextRequest) {
     try {
