@@ -57,7 +57,17 @@ function TerminalContent() {
     }
 
     // 3. Check if active token is selected (not default)
-    const isTokenSelected = tokenAddressParam || (selectedToken.address !== "So11111111111111111111111111111111111111112")
+    const isTokenSelected = tokenAddressParam || (selectedToken?.address && selectedToken.address !== "So11111111111111111111111111111111111111112")
+
+    // Show Loader if URL has token but data isn't loaded yet
+    if (tokenAddressParam && !selectedToken) {
+        return (
+            <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
+                <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+                <span className="ml-2 font-medium text-muted-foreground">Loading Token Data...</span>
+            </div>
+        )
+    }
 
     if (!isTokenSelected) {
         return (
@@ -66,7 +76,16 @@ function TerminalContent() {
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px] -z-10 animate-pulse" />
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] -z-10 animate-pulse delay-1000" />
 
-                <TokenSearch onSelect={handleTokenSelect} variant="hero" />
+                <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-600 mb-4 text-center">
+                    Solana AI Terminal
+                </h1>
+                <p className="text-muted-foreground text-lg md:text-xl max-w-lg mx-auto text-center mb-12">
+                    Paste a token address to analyze chart, metrics, and safety instantly.
+                </p>
+
+                <div className="w-full max-w-2xl">
+                    <TokenSearch onSelect={handleTokenSelect} variant="hero" />
+                </div>
             </div>
         )
     }
