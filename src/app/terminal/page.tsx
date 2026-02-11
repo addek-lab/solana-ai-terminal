@@ -16,15 +16,22 @@ function TerminalContent() {
     const tokenAddressParam = searchParams.get("token")
 
     const [selectedToken, setSelectedToken] = useState<any>(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     // 1. Sync on Load / URL Change
     useEffect(() => {
         if (!tokenAddressParam) {
             setSelectedToken(null)
+            setError(null)
             return
         }
 
+        // Only fetch if we don't have this token already checks
         if (tokenAddressParam && tokenAddressParam !== selectedToken?.address) {
+            setLoading(true)
+            setError(null)
+
             fetch(`/api/proxy/dex?q=${tokenAddressParam}`)
                 .then(res => res.json())
                 .then(data => {
@@ -45,7 +52,17 @@ function TerminalContent() {
                             fdv: pair.fdv || 0,
                             priceChange24h: pair.priceChange?.h24 || 0
                         })
+                    } else {
+                        setError(`Token not found: ${tokenAddressParam}`)
+                        setSelectedToken(null)
                     }
+                })
+                .catch(err => {
+                    console.error("Token fetch error:", err)
+                    setError("Failed to load token data. Please check connection.")
+                })
+                .finally(() => {
+                    setLoading(false)
                 })
         }
     }, [tokenAddressParam])
@@ -59,8 +76,26 @@ function TerminalContent() {
     // 3. Check if active token is selected (not default)
     const isTokenSelected = tokenAddressParam || (selectedToken?.address && selectedToken.address !== "So11111111111111111111111111111111111111112")
 
-    // Show Loader if URL has token but data isn't loaded yet
-    if (tokenAddressParam && !selectedToken) {
+    // Show Error State
+    if (error) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] gap-4">
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-8 text-center max-w-md">
+                    <h3 className="text-xl font-bold text-red-500 mb-2">Token Not Found</h3>
+                    <p className="text-muted-foreground mb-6">{error}</p>
+                    <button
+                        onClick={() => router.push('/terminal')}
+                        className="px-6 py-2 bg-secondary hover:bg-secondary/80 rounded-lg font-medium transition-colors"
+                    >
+                        Back to Search
+                    </button>
+                </div>
+            </div>
+        )
+    }
+
+    // Show Loader if refreshing or initial load with param
+    if (loading || (tokenAddressParam && !selectedToken)) {
         return (
             <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
                 <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
