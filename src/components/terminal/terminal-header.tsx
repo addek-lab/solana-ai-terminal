@@ -1,6 +1,7 @@
 "use client"
 
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 import { WalletConnectButton } from "@/components/providers/client-wallet-provider"
 import { LogoutButton } from "@/components/auth/logout-button"
 import { Button } from "@/components/ui/button"
@@ -14,9 +15,11 @@ export function TerminalHeader() {
     return (
         <header className="flex items-center justify-between px-6 py-4 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
             <div className="flex items-center gap-4">
-                <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
-                    Solana AI Terminal
-                </h1>
+                <Link href="/terminal" className="hover:opacity-80 transition-opacity">
+                    <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">
+                        Solana AI Terminal
+                    </h1>
+                </Link>
             </div>
 
             <div className="flex items-center gap-4">
