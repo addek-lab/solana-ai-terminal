@@ -80,7 +80,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     };
 
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash-exp", // Updated to latest experimental model for better availability
+        model: "gemini-1.5-flash", // Reverting to standard model but without specific version to test if SDK handles it
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schema

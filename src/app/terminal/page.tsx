@@ -27,7 +27,7 @@ function TerminalContent() {
     const [analyzing, setAnalyzing] = useState(false)
     const [analysisError, setAnalysisError] = useState<string | null>(null)
 
-    // 1. Sync on Load / URL Change
+    // 1. Sync on Load / URL Change & Auto-Refresh
     useEffect(() => {
         if (!tokenAddressParam) {
             setSelectedToken(null)
@@ -36,45 +36,62 @@ function TerminalContent() {
             return
         }
 
-        // Only fetch if we don't have this token already checks
-        if (tokenAddressParam && tokenAddressParam !== selectedToken?.address) {
-            setLoading(true)
-            setError(null)
-            setAnalysis(null)
+        const fetchTokenData = async (isFirstLoad: boolean) => {
+            if (isFirstLoad && tokenAddressParam !== selectedToken?.address) {
+                setLoading(true)
+                setError(null)
+                setAnalysis(null)
+            }
 
-            fetch(`/api/proxy/dex?q=${tokenAddressParam}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.pairs && data.pairs.length > 0) {
-                        const pair = data.pairs[0]
-                        setSelectedToken({
-                            address: pair.baseToken.address,
-                            symbol: pair.baseToken.symbol,
-                            name: pair.baseToken.name,
-                            priceUsd: pair.priceUsd,
-                            pairAddress: pair.pairAddress,
-                            imageUrl: pair.info?.imageUrl,
-                            websites: pair.info?.websites || [],
-                            socials: pair.info?.socials || [],
-                            marketCap: pair.marketCap || pair.fdv || 0,
-                            volume24h: pair.volume?.h24 || 0,
-                            liquidity: pair.liquidity?.usd || 0,
-                            fdv: pair.fdv || 0,
-                            priceChange24h: pair.priceChange?.h24 || 0
-                        })
-                    } else {
+            try {
+                const res = await fetch(`/api/proxy/dex?q=${tokenAddressParam}`)
+                const data = await res.json()
+
+                if (data.pairs && data.pairs.length > 0) {
+                    const pair = data.pairs[0]
+                    setSelectedToken((prev: any) => ({
+                        ...prev, // Keep existing state to avoid flicker if needed
+                        address: pair.baseToken.address,
+                        symbol: pair.baseToken.symbol,
+                        name: pair.baseToken.name,
+                        priceUsd: pair.priceUsd,
+                        pairAddress: pair.pairAddress,
+                        imageUrl: pair.info?.imageUrl,
+                        websites: pair.info?.websites || [],
+                        socials: pair.info?.socials || [],
+                        marketCap: pair.marketCap || pair.fdv || 0,
+                        volume24h: pair.volume?.h24 || 0,
+                        liquidity: pair.liquidity?.usd || 0,
+                        fdv: pair.fdv || 0,
+                        priceChange24h: pair.priceChange?.h24 || 0
+                    }))
+                } else {
+                    if (isFirstLoad) {
                         setError(`Token not found: ${tokenAddressParam}`)
                         setSelectedToken(null)
                     }
-                })
-                .catch(err => {
-                    console.error("Token fetch error:", err)
+                }
+            } catch (err) {
+                console.error("Token fetch error:", err)
+                if (isFirstLoad) {
                     setError("Failed to load token data. Please check connection.")
-                })
-                .finally(() => {
+                }
+            } finally {
+                if (isFirstLoad) {
                     setLoading(false)
-                })
+                }
+            }
         }
+
+        // Initial Load
+        fetchTokenData(true)
+
+        // Poll every 3 seconds
+        const interval = setInterval(() => {
+            fetchTokenData(false)
+        }, 3000)
+
+        return () => clearInterval(interval)
     }, [tokenAddressParam])
 
     // Handle AI Analysis Trigger
