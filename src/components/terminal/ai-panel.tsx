@@ -65,7 +65,21 @@ export function AIPanel({ tokenData }: { tokenData?: any }) {
 
     return (
         <div className="w-full">
-            {!analysis && !analyzing && (
+            {error && (
+                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center mb-4 animate-in fade-in slide-in-from-top-2">
+                    <AlertTriangle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+                    <h3 className="font-bold text-red-500 mb-1">Analysis Failed</h3>
+                    <p className="text-sm text-red-400 mb-4">{error}</p>
+                    <button
+                        onClick={handleAnalyze}
+                        className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg text-sm font-medium transition-colors"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            )}
+
+            {!analysis && !analyzing && !error && (
                 <div className="bg-card rounded-xl border border-border p-8 flex flex-col items-center justify-center h-[300px] text-center gap-4 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -103,11 +117,11 @@ export function AIPanel({ tokenData }: { tokenData?: any }) {
                 <div className="bg-card rounded-xl border border-border overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                     {/* Header: Verdict & Confidence */}
                     <div className={`p-6 flex items-center justify-between border-b border-border ${analysis.verdict === "BUY" || analysis.verdict === "DEGEN PLAY" ? "bg-green-500/10" :
-                            analysis.verdict === "SELL" ? "bg-red-500/10" : "bg-yellow-500/10"
+                        analysis.verdict === "SELL" ? "bg-red-500/10" : "bg-yellow-500/10"
                         }`}>
                         <div className="flex items-center gap-4">
                             <div className={`px-4 py-1.5 rounded-full text-sm font-black tracking-wider uppercase flex items-center gap-2 ${analysis.verdict === "BUY" || analysis.verdict === "DEGEN PLAY" ? "bg-green-500 text-white shadow-lg shadow-green-500/20" :
-                                    analysis.verdict === "SELL" ? "bg-red-500 text-white shadow-lg shadow-red-500/20" : "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20"
+                                analysis.verdict === "SELL" ? "bg-red-500 text-white shadow-lg shadow-red-500/20" : "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20"
                                 }`}>
                                 {analysis.verdict === "BUY" ? <TrendingUp className="w-4 h-4" /> :
                                     analysis.verdict === "SELL" ? <TrendingDown className="w-4 h-4" /> :
@@ -186,8 +200,8 @@ export function AIPanel({ tokenData }: { tokenData?: any }) {
                                         <span className="text-sm font-medium text-muted-foreground">Risk Level</span>
                                     </div>
                                     <span className={`px-2 py-1 rounded text-xs font-bold border ${analysis.riskLevel === "LOW" ? "bg-green-500/10 text-green-500 border-green-500/20" :
-                                            analysis.riskLevel === "MEDIUM" ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" :
-                                                "bg-red-500/10 text-red-500 border-red-500/20"
+                                        analysis.riskLevel === "MEDIUM" ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/20" :
+                                            "bg-red-500/10 text-red-500 border-red-500/20"
                                         }`}>
                                         {analysis.riskLevel}
                                     </span>
