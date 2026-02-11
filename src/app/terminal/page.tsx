@@ -152,12 +152,10 @@ function TerminalContent() {
 
                     {/* 3. Risk Analysis */}
                     <RugCheck tokenData={selectedToken} />
-                </div>
-            </div>
 
-            {/* Bottom: AI Analysis (Centered) */}
-            <div className="w-full max-w-4xl mx-auto">
-                <AIPanel tokenData={selectedToken} />
+                    {/* 4. AI Analysis */}
+                    <AIPanel tokenData={selectedToken} />
+                </div>
             </div>
         </div>
     )
