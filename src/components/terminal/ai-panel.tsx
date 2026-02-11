@@ -27,12 +27,19 @@ export function AIPanel({ tokenData }: { tokenData?: any }) {
     }, [tokenData?.address])
 
     const handleAnalyze = async () => {
-        if (!tokenData) return
+        console.log("Analyze clicked. tokenData:", tokenData)
+        if (!tokenData) {
+            console.error("No tokenData found, aborting analysis.")
+            return
+        }
+
         setAnalyzing(true)
         setAnalysis(null)
         setError(null)
+        console.log("State updated: analyzing=true, clearing previous results.")
 
         try {
+            console.log("Sending API request to /api/analyze...")
             const res = await fetch("/api/analyze", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -47,16 +54,25 @@ export function AIPanel({ tokenData }: { tokenData?: any }) {
                 }),
             })
 
-            if (!res.ok) throw new Error("Analysis failed")
+            console.log("API Response received status:", res.status)
+
+            if (!res.ok) {
+                const errorText = await res.text()
+                console.error("API Error Response:", errorText)
+                throw new Error(`Analysis failed: ${res.status} ${res.statusText}`)
+            }
 
             const data = await res.json()
+            console.log("API Data parsed:", data)
+
             if (data.error) throw new Error(data.error)
 
             setAnalysis(data)
-        } catch (error) {
-            console.error(error)
-            setError("Failed to generate analysis. Please try again.")
+        } catch (error: any) {
+            console.error("Analysis Error Caught:", error)
+            setError(error.message || "Failed to generate analysis. Please try again.")
         } finally {
+            console.log("Analysis finished. setAnalyzing(false)")
             setAnalyzing(false)
         }
     }
