@@ -1,6 +1,6 @@
 "use server"
 
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, Schema } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -49,7 +49,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
         };
     }
 
-    const schema = {
+    const schema: Schema = {
         description: "Meme Coin Technical Analysis Trading Plan",
         type: SchemaType.OBJECT,
         properties: {
