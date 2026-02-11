@@ -12,6 +12,7 @@ import { Loader2 } from "lucide-react"
 
 import { analyzeTokenAction } from "@/app/actions/analyze-token"
 import { AIAnalysisDisplay } from "@/components/terminal/ai-analysis-display"
+import { LandingInfo } from "@/components/terminal/landing-info"
 
 function TerminalContent() {
     const searchParams = useSearchParams()
@@ -169,16 +170,11 @@ function TerminalContent() {
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px] -z-10 animate-pulse" />
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] -z-10 animate-pulse delay-1000" />
 
-                <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-600 mb-4 text-center">
-                    Solana AI Terminal
-                </h1>
-                <p className="text-muted-foreground text-lg md:text-xl max-w-lg mx-auto text-center mb-12">
-                    Paste a token address to analyze chart, metrics, and safety instantly.
-                </p>
-
-                <div className="w-full max-w-2xl">
+                <div className="w-full max-w-2xl relative z-10">
                     <TokenSearch onSelect={handleTokenSelect} variant="hero" />
                 </div>
+
+                <LandingInfo />
             </div>
         )
     }
