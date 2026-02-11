@@ -1,17 +1,68 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+
+const schema = {
+    description: "Meme Coin Technical Analysis Trading Plan",
+    type: SchemaType.OBJECT,
+    properties: {
+        verdict: {
+            type: SchemaType.STRING,
+            description: "Overall trading verdict",
+            enum: ["BUY", "WAIT", "SELL", "DEGEN PLAY"]
+        },
+        confidence: {
+            type: SchemaType.NUMBER,
+            description: "Confidence score 0-100",
+        },
+        riskLevel: {
+            type: SchemaType.STRING,
+            description: "Risk assessment",
+            enum: ["LOW", "MEDIUM", "HIGH", "EXTREME"]
+        },
+        action: {
+            type: SchemaType.STRING,
+            description: "Short concise action phrase (e.g. 'Accumulate Dips' or 'Wait for Breakout')"
+        },
+        entry: {
+            type: SchemaType.STRING,
+            description: "Recommended entry price zone"
+        },
+        stopLoss: {
+            type: SchemaType.STRING,
+            description: "Stop loss price level"
+        },
+        takeProfit: {
+            type: SchemaType.ARRAY,
+            description: "Three take profit targets",
+            items: { type: SchemaType.STRING }
+        },
+        reasoning: {
+            type: SchemaType.ARRAY,
+            description: "Key technical reasons for the verdict",
+            items: { type: SchemaType.STRING }
+        }
+    },
+    required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning"]
+};
 
 export async function POST(req: NextRequest) {
     try {
         const { tokenSymbol, tokenName, price, marketCap, liquidity, volume24h, priceChange24h } = await req.json();
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        // Use flash for speed and cost effectiveness
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+            generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: schema
+            }
+        });
 
         const prompt = `
-      Act as an expert crypto trader and technical analyst. 
-      Analyze the following market data for ${tokenName} (${tokenSymbol}):
+      Act as a legendary Crypto Degen and Technical Analyst specializing in Solana Meme Coins. 
+      Analyze the following marker data for ${tokenName} (${tokenSymbol}):
 
       - Price: $${price}
       - 24h Change: ${priceChange24h}%
@@ -19,34 +70,45 @@ export async function POST(req: NextRequest) {
       - Liquidity: $${liquidity}
       - 24h Volume: $${volume24h}
 
-      Provide a structured trading plan:
-      
-      1. **Verdict**: BULLISH, BEARISH, or NEUTRAL.
-      2. **Trade Setup**:
-         - **Entry**: Current or wait for dip?
-         - **Stop Loss (SL)**: Specific price level below support.
-         - **Take Profit (TP)**: Specific price target.
-      3. **Liquidity Analysis**: Is $${liquidity} liquidity sufficient for valid price discovery? Is it safe from high slippage?
-      
-      Keep it concise, actionable and under 150 words. Format with bolding for key values.
+      **Strategy Guidelines:**
+      1. **Momentum**: If 24h Change > 20% and Volume > Liquidity, it's a momentum play.
+      2. **Safety**: If Liquidity < $10k, it's EXTREME risk.
+      3. **RSI/Overbought**: If price trend implies parabolic move, look for pullbacks.
+      4. **Targets**: Set realistic meme coin targets (2x, 5x, 10x potential or standard fib levels).
+
+      Provide a structured JSON trading plan as requested by the schema.
     `;
 
         try {
             const result = await model.generateContent(prompt);
             const response = await result.response;
             const text = response.text();
-            return NextResponse.json({ analysis: text });
+
+            // Validate that we got a valid JSON string
+            try {
+                JSON.parse(text); // Just to check validity
+                return NextResponse.json(JSON.parse(text));
+            } catch (e) {
+                console.error("Invalid JSON from AI:", text);
+                throw new Error("AI returned invalid JSON");
+            }
+
         } catch (apiError: any) {
-            console.warn("Gemini API Error (likely location/quota):", apiError.message);
+            console.warn("Gemini API Error:", apiError.message);
 
-            // Fallback Mock Response for Demo/Restricted Regions
-            const mockAnalysis = `
-*   **Bullish/Bearish**: Neutral-Bullish. The ${priceChange24h}% gain suggests strength, but volume ($${volume24h}) needs to confirm the move.
-*   **Liquidity**: $${liquidity} is sufficient for small-mid size trades. minimal slippage expected.
-*   **Setup**: Watch for a breakout above recent highs. Set stops below support levels implied by the market cap ($${marketCap}).
-        `.trim();
+            // Fallback Mock Response
+            const mockResponse = {
+                verdict: "WAIT",
+                confidence: 50,
+                riskLevel: "MEDIUM",
+                action: "Wait for Volume Confirmation",
+                entry: "N/A",
+                stopLoss: "N/A",
+                takeProfit: ["N/A"],
+                reasoning: ["API Quota Exceeded or Error", "Using Mock Data"]
+            };
 
-            return NextResponse.json({ analysis: mockAnalysis });
+            return NextResponse.json(mockResponse);
         }
     } catch (error) {
         console.error("General Error:", error);

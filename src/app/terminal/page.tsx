@@ -15,24 +15,16 @@ function TerminalContent() {
     const router = useRouter()
     const tokenAddressParam = searchParams.get("token")
 
-    const [selectedToken, setSelectedToken] = useState<any>({
-        symbol: "SOL/USDC",
-        name: "Solana",
-        address: "So11111111111111111111111111111111111111112",
-        pairAddress: "58flLDgdXBRuP8SpkyfiXUJaKV1HMts2a7Id2n9E5d8",
-        priceUsd: "0",
-        marketCap: 0,
-        volume24h: 0,
-        liquidity: 0,
-        fdv: 0,
-        priceChange24h: 0,
-        websites: [],
-        socials: []
-    })
+    const [selectedToken, setSelectedToken] = useState<any>(null)
 
     // 1. Sync on Load / URL Change
     useEffect(() => {
-        if (tokenAddressParam && tokenAddressParam !== selectedToken.address) {
+        if (!tokenAddressParam) {
+            setSelectedToken(null)
+            return
+        }
+
+        if (tokenAddressParam && tokenAddressParam !== selectedToken?.address) {
             fetch(`/api/proxy/dex?q=${tokenAddressParam}`)
                 .then(res => res.json())
                 .then(data => {
