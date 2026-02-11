@@ -6,6 +6,8 @@ import { ChartView } from "@/components/terminal/chart-view"
 import { AIPanel } from "@/components/terminal/ai-panel"
 import { TokenSearch } from "@/components/terminal/token-search"
 import { TokenMetrics } from "@/components/terminal/token-metrics"
+import { TokenHeader } from "@/components/terminal/token-header"
+import { RugCheck } from "@/components/terminal/rug-check"
 import { Loader2 } from "lucide-react"
 
 function TerminalContent() {
@@ -23,7 +25,9 @@ function TerminalContent() {
         volume24h: 0,
         liquidity: 0,
         fdv: 0,
-        priceChange24h: 0
+        priceChange24h: 0,
+        websites: [],
+        socials: []
     })
 
     // 1. Sync on Load / URL Change
@@ -41,6 +45,8 @@ function TerminalContent() {
                             priceUsd: pair.priceUsd,
                             pairAddress: pair.pairAddress,
                             imageUrl: pair.info?.imageUrl,
+                            websites: pair.info?.websites || [],
+                            socials: pair.info?.socials || [],
                             marketCap: pair.marketCap || pair.fdv || 0,
                             volume24h: pair.volume?.h24 || 0,
                             liquidity: pair.liquidity?.usd || 0,
@@ -75,41 +81,31 @@ function TerminalContent() {
 
     return (
         <div className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
-            {/* Header Row: Search + Token Info */}
-            <div className="w-full max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                <div className="w-full md:w-1/3">
-                    <TokenSearch onSelect={handleTokenSelect} variant="compact" />
-                </div>
-
-                {/* Token Header / Avatar */}
-                <div className="flex items-center gap-3 bg-card/50 px-4 py-2 rounded-xl border border-border/50 backdrop-blur-sm">
-                    {selectedToken.imageUrl ? (
-                        <img src={selectedToken.imageUrl} alt={selectedToken.name} className="w-8 h-8 rounded-full ring-2 ring-purple-500/20" />
-                    ) : (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xs font-bold text-white">
-                            {selectedToken.symbol?.[0]}
-                        </div>
-                    )}
-                    <div className="flex flex-col">
-                        <span className="font-bold text-sm leading-none">{selectedToken.name}</span>
-                        <span className="text-xs text-muted-foreground font-mono">{selectedToken.symbol}</span>
-                    </div>
-                </div>
+            {/* Header Row: Just Search Bar (Full Width) */}
+            <div className="w-full max-w-[1920px] mx-auto">
+                <TokenSearch onSelect={handleTokenSelect} variant="compact" />
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[70vh]">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-auto min-h-[70vh]">
 
                 {/* Left: Chart (Larger 3/4) */}
-                <div className="lg:col-span-3 bg-card rounded-xl border border-border p-1 shadow-sm overflow-hidden flex flex-col">
+                <div className="lg:col-span-3 bg-card rounded-xl border border-border p-1 shadow-sm overflow-hidden flex flex-col h-[600px] lg:h-auto">
                     <div className="flex-1 bg-background/50 rounded-lg overflow-hidden">
                         <ChartView pairAddress={selectedToken.pairAddress} />
                     </div>
                 </div>
 
-                {/* Right: Metrics (Smaller 1/4) */}
-                <div className="lg:col-span-1 flex flex-col gap-4">
+                {/* Right: Sidebar (Metrics, Identity, Risk) */}
+                <div className="lg:col-span-1 flex flex-col gap-4 h-full overflow-y-auto">
+                    {/* 1. Identity Header */}
+                    <TokenHeader tokenData={selectedToken} />
+
+                    {/* 2. Market Overview */}
                     <TokenMetrics tokenData={selectedToken} />
+
+                    {/* 3. Risk Analysis */}
+                    <RugCheck tokenData={selectedToken} />
                 </div>
             </div>
 

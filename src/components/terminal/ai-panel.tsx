@@ -1,11 +1,17 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Brain, Loader2, Sparkles } from "lucide-react"
 
 export function AIPanel({ tokenData }: { tokenData?: any }) {
     const [analyzing, setAnalyzing] = useState(false)
     const [analysis, setAnalysis] = useState<string | null>(null)
+
+    // Reset analysis when token changes
+    useEffect(() => {
+        setAnalysis(null)
+        setAnalyzing(false)
+    }, [tokenData?.address])
 
     const handleAnalyze = async () => {
         if (!tokenData) return
