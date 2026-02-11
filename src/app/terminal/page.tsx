@@ -58,11 +58,43 @@ function TerminalContent() {
         router.push(`/terminal?token=${token.address}`)
     }
 
+    // 3. Check if active token is selected (not default)
+    const isTokenSelected = tokenAddressParam || (selectedToken.address !== "So11111111111111111111111111111111111111112")
+
+    if (!isTokenSelected) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] p-4 relative overflow-hidden">
+                {/* Background Blobs */}
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px] -z-10 animate-pulse" />
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] -z-10 animate-pulse delay-1000" />
+
+                <TokenSearch onSelect={handleTokenSelect} variant="hero" />
+            </div>
+        )
+    }
+
     return (
         <div className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
-            {/* Header: Search Bar */}
-            <div className="w-full max-w-4xl mx-auto">
-                <TokenSearch onSelect={handleTokenSelect} />
+            {/* Header Row: Search + Token Info */}
+            <div className="w-full max-w-[1920px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="w-full md:w-1/3">
+                    <TokenSearch onSelect={handleTokenSelect} variant="compact" />
+                </div>
+
+                {/* Token Header / Avatar */}
+                <div className="flex items-center gap-3 bg-card/50 px-4 py-2 rounded-xl border border-border/50 backdrop-blur-sm">
+                    {selectedToken.imageUrl ? (
+                        <img src={selectedToken.imageUrl} alt={selectedToken.name} className="w-8 h-8 rounded-full ring-2 ring-purple-500/20" />
+                    ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xs font-bold text-white">
+                            {selectedToken.symbol?.[0]}
+                        </div>
+                    )}
+                    <div className="flex flex-col">
+                        <span className="font-bold text-sm leading-none">{selectedToken.name}</span>
+                        <span className="text-xs text-muted-foreground font-mono">{selectedToken.symbol}</span>
+                    </div>
+                </div>
             </div>
 
             {/* Main Content Grid */}
