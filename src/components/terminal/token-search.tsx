@@ -13,11 +13,13 @@ export function TokenSearch({ onSelect, variant = 'compact' }: TokenSearchProps)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
 
-    const handleSearch = async (e?: React.FormEvent) => {
+    const handleSearch = async (e?: React.FormEvent, overrideQuery?: string) => {
         if (e) e.preventDefault()
-        if (!query) return
 
-        const cleanQuery = query.trim()
+        const textToSearch = overrideQuery || query
+        if (!textToSearch) return
+
+        const cleanQuery = textToSearch.trim()
         if (!cleanQuery) return
 
         setLoading(true)
@@ -64,21 +66,26 @@ export function TokenSearch({ onSelect, variant = 'compact' }: TokenSearchProps)
     }
 
     const handlePaste = (e: React.ClipboardEvent) => {
+        e.preventDefault()
         const text = e.clipboardData.getData('text').trim()
-        setQuery(text)
-        // Optional: Auto-search on paste if it looks like an address
-        if (text.length > 30) {
-            // We need to set the query state first, but handleSearch uses the state. 
-            // Ideally we pass the text directly or wait for effect. 
-            // For simplicity, let's just let the user hit enter or click search, 
-            // or we can debounce. The user asked for "preview" effectively.
+        if (text) {
+            setQuery(text)
+            // Auto-search if it looks like a full address (base58 chars, decent length)
+            if (text.length > 30) {
+                handleSearch(undefined, text)
+            }
         }
     };
+
+    const clearSearch = () => {
+        setQuery("")
+        setError("")
+    }
 
     const isHero = variant === 'hero'
 
     return (
-        <div className={`relative w-full ${isHero ? 'max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh]' : 'max-w-md'}`}>
+        <div className={`relative w-full ${isHero ? 'max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[60vh]' : 'max-w-sm'}`}>
 
             {isHero && (
                 <div className="text-center mb-8 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -97,18 +104,29 @@ export function TokenSearch({ onSelect, variant = 'compact' }: TokenSearchProps)
                     <div className="relative">
                         <input
                             type="text"
-                            placeholder="Paste Solana Token Address (e.g. DezX...)"
+                            placeholder="Paste Solana Token Address..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             onPaste={handlePaste}
-                            className={`w-full ${isHero ? 'h-16 pl-14 pr-32 text-lg shadow-2xl' : 'h-10 pl-10 pr-4 text-sm'} rounded-xl border border-border bg-background/80 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all placeholder:text-muted-foreground/50`}
+                            className={`w-full ${isHero ? 'h-16 pl-14 pr-32 text-lg shadow-2xl' : 'h-9 pl-9 pr-20 text-sm'} rounded-xl border border-border bg-background/80 backdrop-blur-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all placeholder:text-muted-foreground/50`}
                         />
                         <Search className={`absolute ${isHero ? 'left-5 top-5 h-6 w-6' : 'left-3 top-2.5 h-4 w-4'} text-muted-foreground`} />
+
+                        {/* Clear Button (only if query exists) */}
+                        {query && !loading && (
+                            <button
+                                type="button"
+                                onClick={clearSearch}
+                                className={`absolute ${isHero ? 'right-36 top-5' : 'right-20 top-2.5'} text-muted-foreground hover:text-foreground transition-colors`}
+                            >
+                                X
+                            </button>
+                        )}
 
                         <button
                             type="submit"
                             disabled={loading || !query}
-                            className={`absolute ${isHero ? 'right-2 top-2 bottom-2 px-6' : 'right-1.5 top-1.5 h-7 px-3'} bg-primary text-primary-foreground font-medium rounded-lg disabled:opacity-50 hover:bg-primary/90 transition-all flex items-center gap-2`}
+                            className={`absolute ${isHero ? 'right-2 top-2 bottom-2 px-6' : 'right-1 top-1 bottom-1 px-3'} bg-primary text-primary-foreground font-medium rounded-lg disabled:opacity-50 hover:bg-primary/90 transition-all flex items-center gap-2`}
                         >
                             {loading ? <Loader2 className={`animate-spin ${isHero ? 'h-5 w-5' : 'h-3 w-3'}`} /> : (
                                 <>
