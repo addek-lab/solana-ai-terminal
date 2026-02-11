@@ -45,7 +45,7 @@ const schema = {
         }
     },
     required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning"]
-};
+} as const;
 
 export async function POST(req: NextRequest) {
     try {
