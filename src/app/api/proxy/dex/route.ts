@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+, StartLine: 3, TargetContent:
 
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
