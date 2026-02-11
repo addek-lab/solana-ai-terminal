@@ -9,6 +9,7 @@ const schema = {
     properties: {
         verdict: {
             type: SchemaType.STRING,
+            format: "enum",
             description: "Overall trading verdict",
             enum: ["BUY", "WAIT", "SELL", "DEGEN PLAY"]
         },
@@ -18,6 +19,7 @@ const schema = {
         },
         riskLevel: {
             type: SchemaType.STRING,
+            format: "enum",
             description: "Risk assessment",
             enum: ["LOW", "MEDIUM", "HIGH", "EXTREME"]
         },
@@ -45,7 +47,7 @@ const schema = {
         }
     },
     required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning"]
-} as const;
+};
 
 export async function POST(req: NextRequest) {
     try {
