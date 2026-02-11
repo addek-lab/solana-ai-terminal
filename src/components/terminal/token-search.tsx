@@ -16,8 +16,8 @@ export function TokenSearch({ onSelect }: { onSelect: (token: any) => void }) {
         setError("")
 
         try {
-            // Fetch token info from DexScreener
-            const res = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${query}`)
+            // Fetch token info via internal proxy to avoid CORS/CSP issues
+            const res = await fetch(`/api/proxy/dex?q=${query}`)
             const data = await res.json()
 
             if (!data.pairs || data.pairs.length === 0) {
