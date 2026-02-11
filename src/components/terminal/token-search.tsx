@@ -17,16 +17,19 @@ export function TokenSearch({ onSelect, variant = 'compact' }: TokenSearchProps)
         if (e) e.preventDefault()
         if (!query) return
 
+        const cleanQuery = query.trim()
+        if (!cleanQuery) return
+
         setLoading(true)
         setError("")
 
         try {
             // Fetch token info via internal proxy to avoid CORS/CSP issues
-            const res = await fetch(`/api/proxy/dex?q=${query}`)
+            const res = await fetch(`/api/proxy/dex?q=${cleanQuery}`)
             const data = await res.json()
 
             if (!data.pairs || data.pairs.length === 0) {
-                setError("Token not found or no pairs available.")
+                setError(`Token not found: ${cleanQuery.slice(0, 8)}...`)
                 setLoading(false)
                 return
             }
@@ -61,7 +64,7 @@ export function TokenSearch({ onSelect, variant = 'compact' }: TokenSearchProps)
     }
 
     const handlePaste = (e: React.ClipboardEvent) => {
-        const text = e.clipboardData.getData('text')
+        const text = e.clipboardData.getData('text').trim()
         setQuery(text)
         // Optional: Auto-search on paste if it looks like an address
         if (text.length > 30) {
