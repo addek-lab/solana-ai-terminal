@@ -10,6 +10,9 @@ import { TokenHeader } from "@/components/terminal/token-header"
 import { RugCheck } from "@/components/terminal/rug-check"
 import { Loader2 } from "lucide-react"
 
+import { analyzeTokenAction } from "@/app/actions/analyze-token"
+import { AIAnalysisDisplay } from "@/components/terminal/ai-analysis-display"
+
 function TerminalContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -19,11 +22,17 @@ function TerminalContent() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
+    // AI Analysis State
+    const [analysis, setAnalysis] = useState<any>(null)
+    const [analyzing, setAnalyzing] = useState(false)
+    const [analysisError, setAnalysisError] = useState<string | null>(null)
+
     // 1. Sync on Load / URL Change
     useEffect(() => {
         if (!tokenAddressParam) {
             setSelectedToken(null)
             setError(null)
+            setAnalysis(null)
             return
         }
 
@@ -31,6 +40,7 @@ function TerminalContent() {
         if (tokenAddressParam && tokenAddressParam !== selectedToken?.address) {
             setLoading(true)
             setError(null)
+            setAnalysis(null)
 
             fetch(`/api/proxy/dex?q=${tokenAddressParam}`)
                 .then(res => res.json())
@@ -66,6 +76,37 @@ function TerminalContent() {
                 })
         }
     }, [tokenAddressParam])
+
+    // Handle AI Analysis Trigger
+    const handleAnalyze = async () => {
+        if (!selectedToken) return
+
+        setAnalyzing(true)
+        setAnalysis(null)
+        setAnalysisError(null)
+
+        try {
+            const result = await analyzeTokenAction({
+                symbol: selectedToken.symbol,
+                name: selectedToken.name,
+                price: selectedToken.priceUsd,
+                marketCap: selectedToken.marketCap,
+                liquidity: selectedToken.liquidity,
+                volume24h: selectedToken.volume24h,
+                priceChange24h: selectedToken.priceChange24h
+            })
+
+            if (result.error) {
+                setAnalysisError(result.error)
+            } else {
+                setAnalysis(result)
+            }
+        } catch (e: any) {
+            setAnalysisError(e.message || "Analysis failed")
+        } finally {
+            setAnalyzing(false)
+        }
+    }
 
     // 2. Handle Search Select
     const handleTokenSelect = (token: any) => {
@@ -153,10 +194,22 @@ function TerminalContent() {
                     {/* 3. Risk Analysis */}
                     <RugCheck tokenData={selectedToken} />
 
-                    {/* 4. AI Analysis */}
-                    <AIPanel tokenData={selectedToken} />
+                    {/* 4. AI Analysis Trigger */}
+                    <AIPanel
+                        tokenData={selectedToken}
+                        onAnalyze={handleAnalyze}
+                        isAnalyzing={analyzing}
+                        error={analysisError}
+                    />
                 </div>
             </div>
+
+            {/* Bottom Row: AI Analysis Results */}
+            {analysis && (
+                <div className="w-full max-w-[1920px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <AIAnalysisDisplay analysis={analysis} />
+                </div>
+            )}
         </div>
     )
 }
