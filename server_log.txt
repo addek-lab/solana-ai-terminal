@@ -1,0 +1,33 @@
+
+> solana-ai-terminal@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.68.105:3000
+- Environments: .env.local
+
+✓ Starting...
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+✓ Ready in 1174ms
+Error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent: [404 Not Found] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+    at async POST (src/app/api/analyze/route.ts:30:24)
+  28 |     `;
+  29 |
+> 30 |         const result = await model.generateContent(prompt);
+     |                        ^
+  31 |         const response = await result.response;
+  32 |         const text = response.text();
+  33 | {
+  status: 404,
+  statusText: 'Not Found',
+  errorDetails: undefined
+}
+ POST /api/analyze 500 in 849ms (compile: 285ms, render: 564ms)
+○ Compiling /api/analyze ...
+ GET /terminal?token=7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr 200 in 4.6s (compile: 4.1s, proxy.ts: 124ms, render: 342ms)
+ GET /api/proxy/dex?q=7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr 200 in 483ms
+ GET /api/auth/session 200 in 969ms (compile: 948ms, render: 21ms)
+Gemini API Error (likely location/quota): [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent: [404 Not Found] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+ POST /api/analyze 200 in 274ms (compile: 123ms, render: 151ms)
+[?25h

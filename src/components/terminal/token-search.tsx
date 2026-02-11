@@ -37,7 +37,12 @@ export function TokenSearch({ onSelect }: { onSelect: (token: any) => void }) {
                 pairAddress: pair.pairAddress,
                 imageUrl: pair.info?.imageUrl,
                 chainId: pair.chainId,
-                dexId: pair.dexId
+                dexId: pair.dexId,
+                marketCap: pair.marketCap || pair.fdv || 0,
+                volume24h: pair.volume?.h24 || 0,
+                liquidity: pair.liquidity?.usd || 0,
+                fdv: pair.fdv || 0,
+                priceChange24h: pair.priceChange?.h24 || 0
             })
 
             setQuery("")
