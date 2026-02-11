@@ -80,7 +80,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     };
 
     const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash", // Reverting to standard model but without specific version to test if SDK handles it
+        model: "gemini-2.5-pro", // Upgraded to latest 2026 Pro model for "World Class" analysis
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schema
@@ -88,7 +88,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     });
 
     const prompt = `
-    You are a legendary crypto degen trader and technical analyst. 
+    You are a legendary crypto degen trader and technical analyst with a track record of 100x calls. 
     Analyze this Solana meme coin based on the following real-time data:
 
     Token: ${tokenData.name} (${tokenData.symbol})
@@ -98,9 +98,11 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     24h Volume: $${tokenData.volume24h}
     24h Change: ${tokenData.priceChange24h}%
 
-    Provide a structured trading plan. 
-    Be direct, use crypto slang (degen, aping, jeets) where appropriate but keep the analysis sharp.
-    If liquidity is < $10k or volume is very low, mark as HIGH/EXTREME RISK.
+    Provide a professional, sharp, and no-nonsense trading plan.
+    - BE CRITICAL. If the token looks like garbage, say it.
+    - Use crypto native language (support/resistance, liq grabs, volume divergence, jeets, diamond hands).
+    - If liquidity is < $100k or Volume < $10k, flag as EXTREME RISK immediately.
+    - Your goal is to maximize profit and protect capital. 
     `;
 
     try {
