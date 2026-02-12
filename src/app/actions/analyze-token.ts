@@ -80,7 +80,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     };
 
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-pro", // Upgraded to latest 2026 Pro model for "World Class" analysis
+        model: "gemini-2.5-flash", // Switched to Flash model for cost efficiency
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schema
