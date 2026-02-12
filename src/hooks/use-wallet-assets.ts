@@ -69,10 +69,10 @@ export function useWalletAssets() {
             // 3. Prepare list of addresses to fetch prices for
             // Add SOL address
             const solAddress = "So11111111111111111111111111111111111111112"
-            const solUsdcPair = "8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXVLzig" // SOL/USDC on Raydium
+            const solUsdcPairId = "8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXVLzig" // SOL/USDC on Raydium
 
             // Limit query length if too many tokens (simple approach: just take first 30 for now to avoid URL length issues)
-            const queryAddresses = [solUsdcPair, ...tokens.map(t => t.mint.toString())].slice(0, 30).join(',')
+            const queryAddresses = [solAddress, ...tokens.map(t => t.mint.toString())].slice(0, 30).join(',')
             console.log("useWalletAssets: Querying prices for:", queryAddresses)
 
             // 4. Fetch Prices from our Proxy
@@ -88,8 +88,14 @@ export function useWalletAssets() {
                         // This is a bit tricky because one token might have multiple pairs.
                         // We'll map by baseToken address.
                         priceJson.pairs.forEach((pair: any) => {
-                            if (pair.pairAddress === solUsdcPair) {
-                                priceData[solAddress] = pair;
+                            // Specialized logic for SOL: Prefer the specific SOL/USDC pair
+                            if (pair.baseToken.address === solAddress) {
+                                if (pair.pairAddress === solUsdcPairId) {
+                                    priceData[solAddress] = pair;
+                                } else if (!priceData[solAddress]) {
+                                    // Fallback to first pair found if specific one isn't seen yet (unlikely if query works)
+                                    priceData[solAddress] = pair
+                                }
                             } else if (!priceData[pair.baseToken.address]) {
                                 priceData[pair.baseToken.address] = pair
                             }
