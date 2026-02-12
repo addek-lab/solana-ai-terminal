@@ -28,6 +28,7 @@ function TerminalContent() {
     const [analysis, setAnalysis] = useState<any>(null)
     const [analyzing, setAnalyzing] = useState(false)
     const [analysisError, setAnalysisError] = useState<string | null>(null)
+    const [isDeepThinking, setIsDeepThinking] = useState(false)
 
     // 1. Sync on Load / URL Change & Auto-Refresh
     useEffect(() => {
@@ -113,7 +114,7 @@ function TerminalContent() {
                 liquidity: selectedToken.liquidity,
                 volume24h: selectedToken.volume24h,
                 priceChange24h: selectedToken.priceChange24h
-            })
+            }, { deepThinking: isDeepThinking })
 
             if (result.error) {
                 setAnalysisError(result.error)
@@ -228,6 +229,8 @@ function TerminalContent() {
                         onAnalyze={handleAnalyze}
                         isAnalyzing={analyzing}
                         error={analysisError}
+                        isDeepThinking={isDeepThinking}
+                        onToggleDeepThinking={setIsDeepThinking}
                     />
                 </div>
             </div>

@@ -97,6 +97,21 @@ export default function PortfolioPage() {
                                 </p>
                                 <WalletConnectButton />
                             </div>
+                        ) : assetsError ? (
+                            <div className="flex flex-col items-center justify-center min-h-[40vh] space-y-4 text-center border border-dashed border-red-500/50 rounded-xl bg-red-500/10 p-8">
+                                <AlertTriangle className="w-12 h-12 text-red-500" />
+                                <h3 className="text-lg font-bold text-red-500">Error Loading Assets</h3>
+                                <p className="text-red-400 max-w-md">
+                                    {assetsError}
+                                </p>
+                                <button
+                                    onClick={refetch}
+                                    className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors border border-red-500/20"
+                                >
+                                    <RefreshCw className="w-4 h-4" />
+                                    Retry
+                                </button>
+                            </div>
                         ) : assetsLoading ? (
                             <div className="flex items-center justify-center min-h-[40vh]">
                                 <RefreshCw className="w-8 h-8 animate-spin text-primary" />

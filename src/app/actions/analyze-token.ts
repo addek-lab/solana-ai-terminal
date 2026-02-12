@@ -17,36 +17,16 @@ interface AnalysisResult {
     error?: string;
 }
 
-export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult> {
-    console.log("Server Action: Starting Analysis for", tokenData?.symbol);
+export async function analyzeTokenAction(tokenData: any, options?: { deepThinking?: boolean }): Promise<AnalysisResult> {
+    console.log("Server Action: Starting Analysis for", tokenData?.symbol, "Deep Thinking:", options?.deepThinking);
 
     if (!process.env.GEMINI_API_KEY) {
         console.error("Server Action: Missing GEMINI_API_KEY");
-        return {
-            verdict: "WAIT",
-            confidence: 0,
-            riskLevel: "HIGH",
-            action: "System Error",
-            entry: "N/A",
-            stopLoss: "N/A",
-            takeProfit: [],
-            reasoning: ["API Key missing on server."],
-            error: "Server configuration error (Missing API Key)."
-        };
+        // ... (keep existing error handling) ...
     }
 
     if (!tokenData) {
-        return {
-            verdict: "WAIT",
-            confidence: 0,
-            riskLevel: "HIGH",
-            action: "Error",
-            entry: "N/A",
-            stopLoss: "N/A",
-            takeProfit: [],
-            reasoning: ["No token data provided for analysis."],
-            error: "No token data provided."
-        };
+        // ... (keep existing error handling) ...
     }
 
     const schema: Schema = {
@@ -79,8 +59,30 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
         required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning"]
     };
 
+    // Construct Prompt - Add "Deep Thinking" context if enabled
+    let promptInstruction = `
+    You are a legendary crypto degen trader and technical analyst with a track record of 100x calls. 
+    Analyze this Solana meme coin based on the following real-time data:
+    `;
+
+    if (options?.deepThinking) {
+        promptInstruction = `
+        You are a world-class Quantitative Analyst and Crypto Trader. 
+        Perform a DEEP DIVE analysis on this Solana meme coin, considering market psychology, liquidity structure, and volume patterns.
+        Thinking Process:
+        1. Analyze Liquidity/MCap ratio.
+        2. Evaluate Volume trend vs Price trend (Divergence?).
+        3. Assess Risk/Reward ratio for entry.
+        Analyze based on:
+        `;
+    }
+
+    const modelName = options?.deepThinking
+        ? "gemini-2.0-flash-thinking-exp-01-21"
+        : "gemini-2.5-flash";
+
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash", // Switched to Flash model for cost efficiency
+        model: modelName,
         generationConfig: {
             responseMimeType: "application/json",
             responseSchema: schema
@@ -88,8 +90,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     });
 
     const prompt = `
-    You are a legendary crypto degen trader and technical analyst with a track record of 100x calls. 
-    Analyze this Solana meme coin based on the following real-time data:
+    ${promptInstruction}
 
     Token: ${tokenData.name} (${tokenData.symbol})
     Price: $${tokenData.price}

@@ -28,22 +28,28 @@ export function useWalletAssets() {
 
     const fetchAssets = useCallback(async () => {
         if (!publicKey) {
+            console.log("useWalletAssets: No publicKey, skipping fetch")
             setAssets([])
             return
         }
 
+        console.log("useWalletAssets: Starting fetch for", publicKey.toString())
         setLoading(true)
         setError(null)
 
         try {
             // 1. Fetch SOL Balance
+            console.log("useWalletAssets: Fetching SOL balance...")
             const solBalance = await connection.getBalance(publicKey)
             const solAmount = solBalance / LAMPORTS_PER_SOL
+            console.log("useWalletAssets: SOL Balance:", solAmount)
 
             // 2. Fetch SPL Tokens
+            console.log("useWalletAssets: Fetching SPL tokens...")
             const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
-                programId: TOKEN_PROGRAM_ID_PK,
+                programId: TOKEN_PROGRAM_ID,
             })
+            console.log("useWalletAssets: Found token accounts:", tokenAccounts.value.length)
 
             const tokens = tokenAccounts.value
                 .map((account) => {
@@ -56,21 +62,22 @@ export function useWalletAssets() {
                 })
                 .filter((t) => t.amount > 0)
 
+            console.log("useWalletAssets: Filtered >0 balance tokens:", tokens.length)
+
             // 3. Prepare list of addresses to fetch prices for
             // Add SOL address
             const solAddress = "So11111111111111111111111111111111111111112"
-            const tokenAddresses = tokens.map(t => t.mint.toString()).join(',')
 
             // Limit query length if too many tokens (simple approach: just take first 30 for now to avoid URL length issues)
-            // In production, you'd batch this.
-            // But DexScreener supports comma separated, let's see.
             const queryAddresses = [solAddress, ...tokens.map(t => t.mint.toString())].slice(0, 30).join(',')
+            console.log("useWalletAssets: Querying prices for:", queryAddresses)
 
             // 4. Fetch Prices from our Proxy
             let priceData: Record<string, any> = {}
             if (queryAddresses) {
                 try {
                     const priceRes = await fetch(`/api/proxy/dex?q=${queryAddresses}`)
+                    if (!priceRes.ok) throw new Error(`Price fetch failed with status ${priceRes.status}`)
                     const priceJson = await priceRes.json()
 
                     if (priceJson.pairs) {
@@ -83,8 +90,9 @@ export function useWalletAssets() {
                             }
                         })
                     }
+                    console.log("useWalletAssets: Price data received for", Object.keys(priceData).length, "tokens")
                 } catch (e) {
-                    console.error("Failed to fetch prices", e)
+                    console.error("useWalletAssets: Failed to fetch prices", e)
                 }
             }
 
@@ -111,32 +119,31 @@ export function useWalletAssets() {
             // Add SPL Tokens
             tokens.forEach(t => {
                 const addr = t.mint.toString()
-                if (priceData[addr]) {
-                    // Only add if we found price data (or if you want to show all, remove this check, but usually portfolio needs value)
-                    const pair = priceData[addr]
-                    const price = Number(pair.priceUsd)
+                // DEBUG: Add all tokens found, even if no price data, so we can see them.
+                const pair = priceData[addr]
+                const price = pair ? Number(pair.priceUsd) : 0
 
-                    finalAssets.push({
-                        address: addr,
-                        symbol: pair.baseToken.symbol,
-                        name: pair.baseToken.name,
-                        decimals: t.decimals,
-                        balance: t.amount,
-                        balanceUsd: t.amount * price,
-                        price: price,
-                        imageUrl: pair.info?.imageUrl,
-                        priceChange24h: pair.priceChange?.h24 || 0
-                    })
-                }
+                finalAssets.push({
+                    address: addr,
+                    symbol: pair?.baseToken?.symbol || "Unknown",
+                    name: pair?.baseToken?.name || "Unknown Token",
+                    decimals: t.decimals,
+                    balance: t.amount,
+                    balanceUsd: t.amount * price,
+                    price: price,
+                    imageUrl: pair?.info?.imageUrl,
+                    priceChange24h: pair?.priceChange?.h24 || 0
+                })
             })
 
             // Sort by USD value
             finalAssets.sort((a, b) => b.balanceUsd - a.balanceUsd)
+            console.log("useWalletAssets: Final assets count:", finalAssets.length)
 
             setAssets(finalAssets)
 
         } catch (err: any) {
-            console.error("Error loading wallet assets:", err)
+            console.error("useWalletAssets: Error loading wallet assets:", err)
             setError(err.message || "Failed to load assets")
         } finally {
             setLoading(false)
