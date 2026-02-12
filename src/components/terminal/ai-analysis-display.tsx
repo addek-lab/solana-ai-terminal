@@ -1,6 +1,8 @@
 "use client"
 
-import { TrendingUp, TrendingDown, Zap, AlertTriangle, Target, Brain, Shield } from "lucide-react"
+import { useState } from "react"
+import { TrendingUp, TrendingDown, Zap, AlertTriangle, Target, Brain, Shield, Plus, Check } from "lucide-react"
+import { usePortfolio } from "@/hooks/use-portfolio"
 
 interface AnalysisData {
     verdict: "BUY" | "WAIT" | "SELL" | "DEGEN PLAY"
@@ -13,8 +15,32 @@ interface AnalysisData {
     reasoning: string[]
 }
 
-export function AIAnalysisDisplay({ analysis }: { analysis: AnalysisData | null }) {
+export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisData | null, tokenData?: any }) {
+    const { addToken, hasToken } = usePortfolio()
+    const [added, setAdded] = useState(false)
+
     if (!analysis) return null
+
+    const isSaved = tokenData ? hasToken(tokenData.address) : false
+
+    const handleSave = () => {
+        if (!tokenData) return
+
+        addToken({
+            address: tokenData.address,
+            symbol: tokenData.symbol,
+            name: tokenData.name,
+            priceUsd: Number(tokenData.priceUsd),
+            priceChange24h: Number(tokenData.priceChange24h),
+            holdings: 0,
+            avgEntryPrice: 0,
+            imageUrl: tokenData.imageUrl,
+            lastAnalyzed: new Date().toISOString(),
+            aiVerdict: analysis.verdict
+        })
+        setAdded(true)
+        setTimeout(() => setAdded(false), 2000)
+    }
 
     return (
         <div className="bg-card rounded-xl border border-border overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 shadow-xl">
@@ -37,11 +63,27 @@ export function AIAnalysisDisplay({ analysis }: { analysis: AnalysisData | null 
                     </div>
                 </div>
 
-                <div className="flex flex-col items-end">
-                    <span className="text-sm text-muted-foreground uppercase font-bold">Confidence Setup</span>
-                    <div className="flex items-center gap-1">
-                        <span className="text-4xl font-black">{analysis.confidence}%</span>
+                <div className="flex items-center gap-8">
+                    <div className="flex flex-col items-end">
+                        <span className="text-sm text-muted-foreground uppercase font-bold">Confidence Setup</span>
+                        <div className="flex items-center gap-1">
+                            <span className="text-4xl font-black">{analysis.confidence}%</span>
+                        </div>
                     </div>
+
+                    {tokenData && (
+                        <button
+                            onClick={handleSave}
+                            disabled={isSaved || added}
+                            className={`px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-all ${isSaved || added
+                                    ? "bg-secondary text-muted-foreground cursor-default"
+                                    : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
+                                }`}
+                        >
+                            {isSaved || added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                            {isSaved ? "Saved" : added ? "Added" : "Add to Portfolio"}
+                        </button>
+                    )}
                 </div>
             </div>
 

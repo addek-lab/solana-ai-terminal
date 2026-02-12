@@ -102,6 +102,7 @@ export async function analyzeTokenAction(tokenData: any): Promise<AnalysisResult
     - BE CRITICAL. If the token looks like garbage, say it.
     - Use crypto native language (support/resistance, liq grabs, volume divergence, jeets, diamond hands).
     - If liquidity is < $100k or Volume < $10k, flag as EXTREME RISK immediately.
+    - **CRITICAL: Give all Entry, Stop Loss, and Take Profit targets in MARKET CAP (e.g. "$1.2M MC"), NOT price.** 
     - Your goal is to maximize profit and protect capital. 
     `;
 

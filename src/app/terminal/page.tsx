@@ -2,13 +2,14 @@
 
 import { useState, useEffect, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
+import Link from "next/link"
 import { ChartView } from "@/components/terminal/chart-view"
 import { AIPanel } from "@/components/terminal/ai-panel"
 import { TokenSearch } from "@/components/terminal/token-search"
 import { TokenMetrics } from "@/components/terminal/token-metrics"
 import { TokenHeader } from "@/components/terminal/token-header"
 import { RugCheck } from "@/components/terminal/rug-check"
-import { Loader2 } from "lucide-react"
+import { Loader2, LayoutDashboard } from "lucide-react"
 
 import { analyzeTokenAction } from "@/app/actions/analyze-token"
 import { AIAnalysisDisplay } from "@/components/terminal/ai-analysis-display"
@@ -170,6 +171,14 @@ function TerminalContent() {
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px] -z-10 animate-pulse" />
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] -z-10 animate-pulse delay-1000" />
 
+                {/* Top Right Nav */}
+                <div className="absolute top-4 right-4 z-50">
+                    <Link href="/portfolio" className="flex items-center gap-2 px-4 py-2 bg-secondary/50 hover:bg-secondary rounded-lg transition-colors font-medium backdrop-blur-sm border border-border/50">
+                        <LayoutDashboard className="w-4 h-4" />
+                        Portfolio
+                    </Link>
+                </div>
+
                 <div className="w-full max-w-2xl relative z-10">
                     <TokenSearch onSelect={handleTokenSelect} variant="hero" />
                 </div>
@@ -181,9 +190,15 @@ function TerminalContent() {
 
     return (
         <div className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
-            {/* Header Row: Just Search Bar (Full Width) */}
-            <div className="w-full max-w-[1920px] mx-auto">
-                <TokenSearch onSelect={handleTokenSelect} variant="compact" />
+            {/* Header Row: Search + Portfolio */}
+            <div className="w-full max-w-[1920px] mx-auto flex flex-col md:flex-row items-center gap-4">
+                <div className="w-full md:flex-1">
+                    <TokenSearch onSelect={handleTokenSelect} variant="compact" />
+                </div>
+                <Link href="/portfolio" className="flex items-center gap-2 px-4 py-2 bg-card hover:bg-secondary rounded-lg transition-colors font-medium border border-border shadow-sm whitespace-nowrap">
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span className="hidden md:inline">My Portfolio</span>
+                </Link>
             </div>
 
             {/* Main Content Grid */}
@@ -220,7 +235,7 @@ function TerminalContent() {
             {/* Bottom Row: AI Analysis Results */}
             {analysis && (
                 <div className="w-full max-w-[1920px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
-                    <AIAnalysisDisplay analysis={analysis} />
+                    <AIAnalysisDisplay analysis={analysis} tokenData={selectedToken} />
                 </div>
             )}
         </div>
