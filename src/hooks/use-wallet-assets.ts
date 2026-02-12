@@ -83,6 +83,8 @@ export function useWalletAssets() {
                     if (!priceRes.ok) throw new Error(`Price fetch failed with status ${priceRes.status}`)
                     const priceJson = await priceRes.json()
 
+                    console.log("DEBUG: Full DexScreener Response:", priceJson)
+
                     if (priceJson.pairs) {
                         // DexScreener returns pairs. We need to match pairs to tokens.
                         // This is a bit tricky because one token might have multiple pairs.
@@ -90,6 +92,7 @@ export function useWalletAssets() {
                         priceJson.pairs.forEach((pair: any) => {
                             // Specialized logic for SOL: Prefer the specific SOL/USDC pair
                             if (pair.baseToken.address === solAddress) {
+                                console.log("DEBUG: Found SOL Pair:", pair.pairAddress, pair.priceUsd, pair.baseToken.symbol)
                                 if (pair.pairAddress === solUsdcPairId) {
                                     priceData[solAddress] = pair;
                                 } else if (!priceData[solAddress]) {
