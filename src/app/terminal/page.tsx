@@ -14,6 +14,7 @@ import { Loader2, LayoutDashboard } from "lucide-react"
 import { analyzeTokenAction } from "@/app/actions/analyze-token"
 import { AIAnalysisDisplay } from "@/components/terminal/ai-analysis-display"
 import { LandingInfo } from "@/components/terminal/landing-info"
+import { TradePanel } from "@/components/terminal/trade-panel"
 
 function TerminalContent() {
     const searchParams = useSearchParams()
@@ -217,13 +218,16 @@ function TerminalContent() {
                     {/* 1. Identity Header */}
                     <TokenHeader tokenData={selectedToken} />
 
-                    {/* 2. Market Overview */}
+                    {/* 2. Buy/Trade Panel */}
+                    <TradePanel tokenData={selectedToken} />
+
+                    {/* 3. Market Overview */}
                     <TokenMetrics tokenData={selectedToken} />
 
-                    {/* 3. Risk Analysis */}
+                    {/* 4. Risk Analysis */}
                     <RugCheck tokenData={selectedToken} />
 
-                    {/* 4. AI Analysis Trigger */}
+                    {/* 5. AI Analysis Trigger */}
                     <AIPanel
                         tokenData={selectedToken}
                         onAnalyze={handleAnalyze}
