@@ -191,7 +191,7 @@ function TerminalContent() {
     }
 
     return (
-        <div className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
+        <div id="terminal-content" className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
             {/* Header Row: Search + Portfolio */}
             <div className="w-full max-w-[1920px] mx-auto flex flex-col md:flex-row items-center gap-4">
                 <div className="w-full md:flex-1">

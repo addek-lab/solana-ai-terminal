@@ -99,34 +99,40 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
             <button
                 onClick={handleShare}
                 disabled={isSharing}
-                className="flex items-center gap-2 px-3 py-1.5 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 text-[#1DA1F2] rounded-lg text-xs font-medium transition-colors border border-[#1DA1F2]/20"
+                className="w-full h-10 bg-black hover:bg-black/80 text-white font-bold rounded-lg shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 border border-white/10"
             >
                 {isSharing ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                 ) : hasCopied ? (
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-4 h-4 text-green-400" />
                 ) : (
-                    <Twitter className="w-3.5 h-3.5" />
+                    <Twitter className="w-4 h-4 fill-current" />
                 )}
-                <span>{isSharing ? "Capturing..." : hasCopied ? "Copied!" : "Share Analysis"}</span>
+                <span>{isSharing ? "Capturing..." : hasCopied ? "Copied!" : "Push on X"}</span>
             </button>
         )
     }
+
+    // Default variant - also updated to be more prominent if needed, 
+    // but user specifically asked for a button "same size as BUY or Analyze"
+    // The "icon" variant might be used in the header, so we'll keep it as is or upgrade it slightly.
+    // However, the user said "I dont want it to be a small icon but a button".
+    // So we should probably replace the usage in TokenHeader with this "full" variant or similar.
 
     return (
         <button
             onClick={handleShare}
             disabled={isSharing}
-            title="Share on X"
-            className="p-2 bg-secondary/50 hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2] rounded-lg transition-colors border border-border/50 hover:border-[#1DA1F2]/20 text-muted-foreground"
+            className="h-9 px-4 bg-black hover:bg-black/80 text-white font-bold rounded-lg shadow-sm active:scale-[0.98] transition-all flex items-center gap-2 border border-white/10 text-sm"
         >
             {isSharing ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
             ) : hasCopied ? (
                 <Check className="w-4 h-4 text-green-400" />
             ) : (
-                <Share2 className="w-4 h-4" />
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current text-white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
             )}
+            <span className="hidden md:inline">{isSharing ? "Pushing..." : hasCopied ? "Copied!" : "Push on X"}</span>
         </button>
     )
 }
