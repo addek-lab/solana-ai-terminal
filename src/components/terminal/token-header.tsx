@@ -3,6 +3,7 @@
 import { Copy, Check, Globe, Twitter, Send } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
+import { SocialShareButton } from "./social-share-button"
 
 interface TokenHeaderProps {
     tokenData: any
@@ -54,31 +55,32 @@ export function TokenHeader({ tokenData }: TokenHeaderProps) {
                 </div>
             </div>
 
-            {/* Socials */}
-            <div className="flex flex-wrap gap-2 pt-2 border-t border-border/50">
-                {tokenData.websites?.map((site: any, i: number) => (
-                    <Link
-                        key={i}
-                        href={site.url}
-                        target="_blank"
-                        className="p-2 bg-secondary/30 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground"
-                    >
-                        <Globe className="w-4 h-4" />
-                    </Link>
-                ))}
-                {tokenData.socials?.map((social: any, i: number) => (
-                    <Link
-                        key={i}
-                        href={social.url}
-                        target="_blank"
-                        className="p-2 bg-secondary/30 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground"
-                    >
-                        {getSocialIcon(social.type)}
-                    </Link>
-                ))}
-                {(!tokenData.websites?.length && !tokenData.socials?.length) && (
-                    <span className="text-xs text-muted-foreground italic pl-1">No socials found</span>
-                )}
+            {/* Socials & Share */}
+            <div className="flex flex-wrap items-center justify-between pt-2 border-t border-border/50 gap-2">
+                <div className="flex flex-wrap gap-2">
+                    {tokenData.websites?.map((site: any, i: number) => (
+                        <Link
+                            key={i}
+                            href={site.url}
+                            target="_blank"
+                            className="p-2 bg-secondary/30 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+                        >
+                            <Globe className="w-4 h-4" />
+                        </Link>
+                    ))}
+                    {tokenData.socials?.map((social: any, i: number) => (
+                        <Link
+                            key={i}
+                            href={social.url}
+                            target="_blank"
+                            className="p-2 bg-secondary/30 hover:bg-secondary rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+                        >
+                            {getSocialIcon(social.type)}
+                        </Link>
+                    ))}
+                </div>
+
+                <SocialShareButton tokenSymbol={tokenData.symbol} />
             </div>
         </div>
     )
