@@ -30,11 +30,11 @@ export function TokenHeader({ tokenData }: TokenHeaderProps) {
         <div className="bg-card rounded-xl border border-border p-4 flex flex-col gap-4">
             <div className="flex items-start gap-4">
                 {/* Avatar - Large */}
-                <div className="w-20 h-20 rounded-2xl bg-muted shrink-0 overflow-hidden ring-4 ring-background shadow-lg">
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-muted shrink-0 overflow-hidden ring-4 ring-background shadow-lg">
                     {tokenData.imageUrl ? (
                         <img src={tokenData.imageUrl} alt={tokenData.name} className="w-full h-full object-cover" />
                     ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-2xl font-bold text-white">
+                        <div className="w-full h-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xl md:text-2xl font-bold text-white">
                             {tokenData.symbol?.[0]}
                         </div>
                     )}

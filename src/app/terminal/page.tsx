@@ -191,7 +191,7 @@ function TerminalContent() {
     }
 
     return (
-        <div id="terminal-content" className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-6 p-4">
+        <div id="terminal-content" className="flex flex-col h-full min-h-[calc(100vh-100px)] gap-4 md:gap-6 p-2 md:p-4">
             {/* Header Row: Search + Portfolio */}
             <div className="w-full max-w-[1920px] mx-auto flex flex-col md:flex-row items-center gap-4">
                 <div className="w-full md:flex-1">
@@ -204,10 +204,10 @@ function TerminalContent() {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-auto min-h-[70vh]">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 h-auto min-h-[70vh]">
 
                 {/* Left: Chart (Larger 3/4) */}
-                <div className="lg:col-span-3 bg-card rounded-xl border border-border p-1 shadow-sm overflow-hidden flex flex-col h-[600px] lg:h-auto">
+                <div className="lg:col-span-3 bg-card rounded-xl border border-border p-1 shadow-sm overflow-hidden flex flex-col h-[450px] lg:h-auto">
                     <div className="flex-1 bg-background/50 rounded-lg overflow-hidden">
                         <ChartView pairAddress={selectedToken.pairAddress} />
                     </div>

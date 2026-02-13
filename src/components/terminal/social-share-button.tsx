@@ -88,8 +88,20 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
             }
 
         } catch (err: any) {
-            console.error("Screenshot failed:", err)
-            alert(`Share failed: ${err.message}`)
+            console.error("Screenshot failed detailed:", err)
+            let msg = "Unknown error"
+            if (err instanceof Error) {
+                msg = err.message
+            } else if (typeof err === 'string') {
+                msg = err
+            } else {
+                try {
+                    msg = JSON.stringify(err)
+                } catch {
+                    msg = "Circular or un-stringifiable error"
+                }
+            }
+            alert(`Share failed: ${msg}`)
         } finally {
             setIsSharing(false)
         }
