@@ -15,21 +15,28 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
 
     const handleShare = async () => {
         setIsSharing(true)
+        console.log("Starting share process...")
 
         try {
             // 1. Select the dashboard element
             const element = document.getElementById("terminal-content") || document.body
+            console.log("Target element found:", element.id || element.tagName)
 
             if (!element) throw new Error("Could not find element to capture")
 
             // 2. Capture with html2canvas (including watermark)
+            console.log("Starting html2canvas capture...")
             // Fix: explicit cast options to any to allow 'scale'
             const options: any = {
                 useCORS: true,
+                allowTaint: true, // Try allowing taint
                 scale: 2,
+                logging: true, // Enable html2canvas logs
                 backgroundColor: "#09090b",
                 onclone: (clonedDoc: Document) => {
+                    console.log("Cloning document for watermark...")
                     const watermark = clonedDoc.createElement("div")
+                    // ... (rest of watermark styles) ...
                     watermark.style.position = "absolute"
                     watermark.style.bottom = "20px"
                     watermark.style.right = "20px"
@@ -54,16 +61,25 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
                     `
 
                     const container = clonedDoc.getElementById("terminal-content") || clonedDoc.body
-                    container.style.position = "relative"
-                    container.appendChild(watermark)
+                    if (container) {
+                        container.style.position = "relative"
+                        container.appendChild(watermark)
+                    } else {
+                        console.warn("Could not find container in cloned doc")
+                    }
                 }
             }
 
             const canvas = await html2canvas(element, options)
+            console.log("Canvas generated successfully")
 
             // 4. Convert to Blob
             canvas.toBlob(async (blob) => {
-                if (!blob) throw new Error("Failed to generate image")
+                if (!blob) {
+                    console.error("Blob generation failed")
+                    throw new Error("Failed to generate image blob")
+                }
+                console.log("Blob generated, size:", blob.size)
 
                 // 5. Copy to Clipboard
                 try {
@@ -72,6 +88,7 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
                             [blob.type]: blob
                         })
                     ])
+                    console.log("Clipboard write successful")
 
                     setHasCopied(true)
                     setTimeout(() => setHasCopied(false), 3000)
@@ -84,11 +101,13 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
 
                 } catch (clipboardErr) {
                     console.error("Clipboard write failed:", clipboardErr)
+                    alert("Failed to copy to clipboard. Browser might block this action.")
                 }
             }, "image/png")
 
-        } catch (err) {
+        } catch (err: any) {
             console.error("Screenshot failed:", err)
+            alert(`Share failed: ${err.message}`)
         } finally {
             setIsSharing(false)
         }
@@ -112,12 +131,6 @@ export function SocialShareButton({ tokenSymbol = "SOL", variant = "icon" }: Soc
             </button>
         )
     }
-
-    // Default variant - also updated to be more prominent if needed, 
-    // but user specifically asked for a button "same size as BUY or Analyze"
-    // The "icon" variant might be used in the header, so we'll keep it as is or upgrade it slightly.
-    // However, the user said "I dont want it to be a small icon but a button".
-    // So we should probably replace the usage in TokenHeader with this "full" variant or similar.
 
     return (
         <button
