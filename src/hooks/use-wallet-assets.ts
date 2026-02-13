@@ -89,17 +89,26 @@ export function useWalletAssets() {
                         // DexScreener returns pairs. We need to match pairs to tokens.
                         // This is a bit tricky because one token might have multiple pairs.
                         // We'll map by baseToken address.
+
+                        // First pass: Try to find the specific SOL/USDC pair
+                        const specificSolPair = priceJson.pairs.find((p: any) => p.pairAddress === solUsdcPairId);
+
+                        // Second pass: Find the best fallback for SOL if specific not found (ignore FOGO/Junk)
+                        // We filter for pairs where quote token is USDC or USDT to avoid garbage pairs
+                        const fallbackSolPair = priceJson.pairs.find((p: any) =>
+                            p.baseToken.address === solAddress &&
+                            (p.quoteToken.symbol === 'USDC' || p.quoteToken.symbol === 'USDT')
+                        );
+
+                        if (specificSolPair) {
+                            priceData[solAddress] = specificSolPair;
+                        } else if (fallbackSolPair) {
+                            priceData[solAddress] = fallbackSolPair;
+                        }
+
                         priceJson.pairs.forEach((pair: any) => {
-                            // Specialized logic for SOL: Prefer the specific SOL/USDC pair
-                            if (pair.baseToken.address === solAddress) {
-                                console.log("DEBUG: Found SOL Pair:", pair.pairAddress, pair.priceUsd, pair.baseToken.symbol)
-                                if (pair.pairAddress === solUsdcPairId) {
-                                    priceData[solAddress] = pair;
-                                } else if (!priceData[solAddress]) {
-                                    // Fallback to first pair found if specific one isn't seen yet (unlikely if query works)
-                                    priceData[solAddress] = pair
-                                }
-                            } else if (!priceData[pair.baseToken.address]) {
+                            // Specialized logic for SOL is handled above, so distinct here
+                            if (pair.baseToken.address !== solAddress && !priceData[pair.baseToken.address]) {
                                 priceData[pair.baseToken.address] = pair
                             }
                         })
