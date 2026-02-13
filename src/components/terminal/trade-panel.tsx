@@ -22,6 +22,7 @@ export function TradePanel({ tokenData }: TradePanelProps) {
 
     // State
     const [amount, setAmount] = useState<string>("")
+    const [balance, setBalance] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
@@ -33,6 +34,34 @@ export function TradePanel({ tokenData }: TradePanelProps) {
     const [takeProfit2, setTakeProfit2] = useState<string>("+70")
     const [tp1Amount, setTp1Amount] = useState<string>("50")
     const [tp2Amount, setTp2Amount] = useState<string>("50")
+
+    // Fetch SOL Balance
+    useEffect(() => {
+        if (!connection || !publicKey) {
+            setBalance(null)
+            return
+        }
+
+        const fetchBalance = async () => {
+            try {
+                const bal = await connection.getBalance(publicKey)
+                setBalance(bal / 1_000_000_000)
+            } catch (err) {
+                console.error("Failed to fetch balance:", err)
+            }
+        }
+
+        fetchBalance()
+
+        // Subscribe to account changes for real-time updates
+        const id = connection.onAccountChange(publicKey, (accountInfo) => {
+            setBalance(accountInfo.lamports / 1_000_000_000)
+        })
+
+        return () => {
+            connection.removeAccountChangeListener(id)
+        }
+    }, [connection, publicKey, success])
 
 
     const handlePresetClick = (val: string) => {
@@ -137,11 +166,21 @@ export function TradePanel({ tokenData }: TradePanelProps) {
                     <TabsContent value="market" className="space-y-4 pt-2">
                         {/* Amount Input */}
                         <div className="bg-background/50 border border-border rounded-lg p-3 relative focus-within:ring-1 focus-within:ring-purple-500/50 transition-all">
-                            <div className="flex justify-between items-center mb-1">
-                                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Amount (SOL)</span>
-                                <div className="flex items-center gap-1">
-                                    <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" className="w-4 h-4 rounded-full" />
-                                    <span className="text-xs font-bold text-foreground">SOL</span>
+                            <div className="flex justify-between items-start mb-1">
+                                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-1">Amount (SOL)</span>
+                                <div className="flex flex-col items-end gap-0.5">
+                                    <div className="flex items-center gap-1">
+                                        <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" className="w-4 h-4 rounded-full" />
+                                        <span className="text-xs font-bold text-foreground">SOL</span>
+                                    </div>
+                                    {balance !== null && (
+                                        <button
+                                            onClick={() => setAmount((Math.max(0, balance - 0.01)).toFixed(4))}
+                                            className="text-[10px] text-muted-foreground hover:text-purple-400 transition-colors"
+                                        >
+                                            Bal: {balance.toFixed(4)}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                             <div className="flex gap-2 items-end">
