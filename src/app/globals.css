@@ -101,3 +101,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Wallet Adapter Mobile Fix */
+@media (max-width: 768px) {
+  .wallet-adapter-mobile-fix .wallet-adapter-button {
+    padding: 0 10px !important;
+    height: 36px !important;
+    font-size: 13px !important;
+  }
+
+  /* Hide the text span inside the button on mobile */
+  .wallet-adapter-mobile-fix .wallet-adapter-button {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

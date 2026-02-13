@@ -2,6 +2,7 @@
 
 import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
+import { LogOut } from "lucide-react"
 
 export function LogoutButton() {
     return (
@@ -9,8 +10,10 @@ export function LogoutButton() {
             onClick={() => signOut({ callbackUrl: "/" })}
             variant="outline"
             size="sm"
+            className="flex items-center gap-2 px-2 md:px-3"
         >
-            Logout
+            <LogOut className="w-4 h-4" />
+            <span className="hidden md:inline">Logout</span>
         </Button>
     )
 }
