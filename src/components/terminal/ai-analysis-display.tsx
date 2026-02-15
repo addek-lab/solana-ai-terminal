@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { TrendingUp, TrendingDown, Zap, AlertTriangle, Target, Brain, Shield, Plus, Check } from "lucide-react"
 import { usePortfolio } from "@/hooks/use-portfolio"
+import { TechnicalAnalysisVisualizer } from "./technical-analysis-visualizer"
 
 interface AnalysisData {
     verdict: "BUY" | "WAIT" | "SELL" | "DEGEN PLAY"
@@ -13,6 +14,10 @@ interface AnalysisData {
     stopLoss: string
     takeProfit: string[]
     reasoning: string[]
+    priceTarget: number
+    supportLevel: number
+    resistanceLevel: number
+    stopLossLevel: number
 }
 
 export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisData | null, tokenData?: any }) {
@@ -76,8 +81,8 @@ export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisD
                             onClick={handleSave}
                             disabled={isSaved || added}
                             className={`px-4 py-2 rounded-lg font-bold flex items-center gap-2 transition-all ${isSaved || added
-                                    ? "bg-secondary text-muted-foreground cursor-default"
-                                    : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
+                                ? "bg-secondary text-muted-foreground cursor-default"
+                                : "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:scale-105 active:scale-95"
                                 }`}
                         >
                             {isSaved || added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
@@ -154,6 +159,19 @@ export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisD
                     </div>
                 </div>
             </div>
+
+            {/* Visual Technical Analysis */}
+            {(analysis.priceTarget > 0 || analysis.supportLevel > 0) && (
+                <div className="border-t border-border">
+                    <TechnicalAnalysisVisualizer
+                        currentPrice={tokenData?.priceUsd || 0}
+                        target={analysis.priceTarget}
+                        support={analysis.supportLevel}
+                        resistance={analysis.resistanceLevel}
+                        stopLoss={analysis.stopLossLevel}
+                    />
+                </div>
+            )}
         </div>
     )
 }

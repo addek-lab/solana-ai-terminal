@@ -14,6 +14,11 @@ interface AnalysisResult {
     stopLoss: string;
     takeProfit: string[];
     reasoning: string[];
+    // New numerical fields for visualization
+    priceTarget: number; // Primary TP
+    supportLevel: number;
+    resistanceLevel: number;
+    stopLossLevel: number;
     error?: string;
 }
 
@@ -23,10 +28,11 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
     if (!process.env.GEMINI_API_KEY) {
         console.error("Server Action: Missing GEMINI_API_KEY");
         // ... (keep existing error handling) ...
+        throw new Error("Missing API Key");
     }
 
     if (!tokenData) {
-        // ... (keep existing error handling) ...
+        throw new Error("No token data provided");
     }
 
     const schema: Schema = {
@@ -54,9 +60,14 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
             reasoning: {
                 type: SchemaType.ARRAY,
                 items: { type: SchemaType.STRING }
-            }
+            },
+            // Numerical fields
+            priceTarget: { type: SchemaType.NUMBER, description: "Primary Take Profit price in USD" },
+            supportLevel: { type: SchemaType.NUMBER, description: "Nearest Support price in USD" },
+            resistanceLevel: { type: SchemaType.NUMBER, description: "Nearest Resistance price in USD" },
+            stopLossLevel: { type: SchemaType.NUMBER, description: "Stop Loss price in USD" }
         },
-        required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning"]
+        required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning", "priceTarget", "supportLevel", "resistanceLevel", "stopLossLevel"]
     };
 
     // Construct Prompt - Add "Deep Thinking" context if enabled
@@ -103,7 +114,8 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
     - BE CRITICAL. If the token looks like garbage, say it.
     - Use crypto native language (support/resistance, liq grabs, volume divergence, jeets, diamond hands).
     - If liquidity is < $100k or Volume < $10k, flag as EXTREME RISK immediately.
-    - **CRITICAL: Give all Entry, Stop Loss, and Take Profit targets in MARKET CAP (e.g. "$1.2M MC"), NOT price.** 
+    - **CRITICAL: Provide specific USD numerical values for priceTarget, supportLevel, resistanceLevel, and stopLossLevel.** These will be used to draw a chart.
+    - For text fields (entry, stopLoss, takeProfit), you can still use Market Cap if preferred, but the *Level* fields must be USD numbers.
     - Your goal is to maximize profit and protect capital. 
     `;
 
@@ -131,6 +143,10 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
             stopLoss: "N/A",
             takeProfit: [],
             reasoning: ["AI Service unavailable or timed out.", "Please try again later."],
+            priceTarget: 0,
+            supportLevel: 0,
+            resistanceLevel: 0,
+            stopLossLevel: 0,
             error: error.message || "Failed to generate analysis."
         };
     }
