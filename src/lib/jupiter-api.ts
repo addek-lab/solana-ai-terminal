@@ -1,7 +1,7 @@
 import { Connection, PublicKey, VersionedTransaction } from "@solana/web3.js";
 
-const JUPITER_QUOTE_API = "https://quote-api.jup.ag/v6/quote";
-const JUPITER_SWAP_API = "https://quote-api.jup.ag/v6/swap";
+const JUPITER_QUOTE_API = "/api/proxy/jupiter/quote";
+const JUPITER_SWAP_API = "/api/proxy/jupiter/swap";
 
 export async function getQuote(
     inputMint: string,
