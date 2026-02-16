@@ -1,13 +1,12 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useConnection } from "@solana/wallet-adapter-react"
-import { VersionedTransaction } from "@solana/web3.js"
-import { Loader2, Settings, ChevronDown, ChevronUp, AlertTriangle } from "lucide-react"
+import { VersionedTransaction, PublicKey } from "@solana/web3.js"
+import { Loader2, Settings, ChevronDown, ChevronUp, AlertTriangle, ArrowRightLeft } from "lucide-react"
 import { getQuote, getSwapTransaction } from "@/lib/jupiter-api"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
+import { cn } from "@/lib/utils"
 
 interface TradePanelProps {
     tokenData: any
@@ -20,9 +19,16 @@ export function TradePanel({ tokenData }: TradePanelProps) {
     const { publicKey, signTransaction } = useWallet()
     const { connection } = useConnection()
 
-    // State
+    // Mode State
+    const [isBuying, setIsBuying] = useState(true)
+
+    // Data State
+    const [solBalance, setSolBalance] = useState<number | null>(null)
+    const [tokenBalance, setTokenBalance] = useState<number | null>(null)
+    const [tokenDecimals, setTokenDecimals] = useState<number>(6) // Default to 6, update on fetch
+
+    // Form State
     const [amount, setAmount] = useState<string>("")
-    const [balance, setBalance] = useState<number | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [success, setSuccess] = useState<string | null>(null)
@@ -35,42 +41,77 @@ export function TradePanel({ tokenData }: TradePanelProps) {
     const [tp1Amount, setTp1Amount] = useState<string>("50")
     const [tp2Amount, setTp2Amount] = useState<string>("50")
 
-    // Fetch SOL Balance
+    // 1. Fetch decimals when token changes
+    useEffect(() => {
+        if (!tokenData?.address || !connection) return
+
+        const fetchDecimals = async () => {
+            try {
+                const mint = new PublicKey(tokenData.address)
+                const info = await connection.getParsedAccountInfo(mint)
+                if (info.value && 'parsed' in info.value.data) {
+                    setTokenDecimals(info.value.data.parsed.info.decimals)
+                }
+            } catch (err) {
+                console.error("Failed to fetch decimals", err)
+            }
+        }
+        fetchDecimals()
+    }, [tokenData?.address, connection])
+
+    // 2. Fetch Balances
     useEffect(() => {
         if (!connection || !publicKey) {
-            setBalance(null)
+            setSolBalance(null)
+            setTokenBalance(null)
             return
         }
 
-        const fetchBalance = async () => {
+        const fetchBalances = async () => {
             try {
+                // SOL Balance
                 const bal = await connection.getBalance(publicKey)
-                setBalance(bal / 1_000_000_000)
+                setSolBalance(bal / 1_000_000_000)
+
+                // Token Balance
+                if (tokenData?.address) {
+                    const tokenAccounts = await connection.getParsedTokenAccountsByOwner(publicKey, {
+                        mint: new PublicKey(tokenData.address)
+                    })
+                    if (tokenAccounts.value.length > 0) {
+                        setTokenBalance(tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount)
+                    } else {
+                        setTokenBalance(0)
+                    }
+                }
             } catch (err) {
-                console.error("Failed to fetch balance:", err)
+                console.error("Failed to fetch balances:", err)
             }
         }
 
-        fetchBalance()
+        fetchBalances()
 
-        // Subscribe to account changes for real-time updates
-        const id = connection.onAccountChange(publicKey, (accountInfo) => {
-            setBalance(accountInfo.lamports / 1_000_000_000)
-        })
-
-        return () => {
-            connection.removeAccountChangeListener(id)
-        }
-    }, [connection, publicKey, success])
+        // Poll for updates
+        const id = setInterval(fetchBalances, 10000)
+        return () => clearInterval(id)
+    }, [connection, publicKey, success, tokenData?.address])
 
 
     const handlePresetClick = (val: string) => {
-        setAmount(val)
+        if (isBuying) {
+            // SOL presets are direct values
+            setAmount(val)
+        } else {
+            // Sell presets are percentages
+            if (tokenBalance === null) return
+            const pct = parseFloat(val) / 100
+            setAmount((tokenBalance * pct).toFixed(tokenDecimals))
+        }
         setError(null)
         setSuccess(null)
     }
 
-    const handleBuy = async () => {
+    const handleTrade = async () => {
         if (!publicKey || !signTransaction) {
             setError("Please connect your wallet first")
             return
@@ -91,9 +132,18 @@ export function TradePanel({ tokenData }: TradePanelProps) {
         setSuccess(null)
 
         try {
+            // Define Input/Output based on Mode
+            const inputMint = isBuying ? SOL_MINT : tokenData.address
+            const outputMint = isBuying ? tokenData.address : SOL_MINT
+
+            // Calculate atomic amount (lamports/units)
+            const decimals = isBuying ? 9 : tokenDecimals
+            const atomicAmount = Math.floor(parseFloat(amount) * Math.pow(10, decimals))
+
+            console.log(`Trading: ${isBuying ? "Buy" : "Sell"} | In: ${inputMint} | Out: ${outputMint} | Amount: ${atomicAmount} (Decimals: ${decimals})`)
+
             // 1. Get Quote
-            const lamports = parseFloat(amount) * 1_000_000_000
-            const quote = await getQuote(SOL_MINT, tokenData.address, lamports)
+            const quote = await getQuote(inputMint, outputMint, atomicAmount)
 
             if (!quote || quote.error) {
                 throw new Error(quote.error || "Failed to get quote")
@@ -127,17 +177,21 @@ export function TradePanel({ tokenData }: TradePanelProps) {
             }
 
             setSuccess(`Success! TX: ${txid.slice(0, 8)}...`)
-            setAmount("") // Reset amount on success
+            setAmount("")
+            // Trigger balance refresh logic via effect dep or explicit call if needed
 
         } catch (err: any) {
             console.error("Trade Error:", err)
-            setError(err.message || "Swap failed")
+            setError(err.message || "Swap failed. Try increasing slippage.")
         } finally {
             setIsLoading(false)
         }
     }
 
     if (!tokenData) return null
+
+    const currentBalance = isBuying ? solBalance : tokenBalance
+    const balanceLabel = isBuying ? "SOL" : tokenData.symbol
 
     return (
         <div className="w-full bg-card border border-border rounded-xl p-4 flex flex-col gap-4">
@@ -164,21 +218,53 @@ export function TradePanel({ tokenData }: TradePanelProps) {
                     </TabsContent>
 
                     <TabsContent value="market" className="space-y-4 pt-2">
+                        {/* Buy/Sell Toggle */}
+                        <div className="grid grid-cols-2 bg-muted/30 p-1 rounded-lg">
+                            <button
+                                onClick={() => setIsBuying(true)}
+                                className={cn(
+                                    "text-sm font-bold py-2 rounded-md transition-all",
+                                    isBuying ? "bg-[#00ffbd] text-black shadow-lg" : "text-muted-foreground hover:text-foreground"
+                                )}
+                            >
+                                Buy
+                            </button>
+                            <button
+                                onClick={() => setIsBuying(false)}
+                                className={cn(
+                                    "text-sm font-bold py-2 rounded-md transition-all",
+                                    !isBuying ? "bg-red-500 text-white shadow-lg" : "text-muted-foreground hover:text-foreground"
+                                )}
+                            >
+                                Sell
+                            </button>
+                        </div>
+
                         {/* Amount Input */}
-                        <div className="bg-background/50 border border-border rounded-lg p-3 relative focus-within:ring-1 focus-within:ring-purple-500/50 transition-all">
+                        <div className={cn(
+                            "bg-background/50 border rounded-lg p-3 relative focus-within:ring-1 transition-all",
+                            isBuying ? "focus-within:ring-[#00ffbd]/50 border-border" : "focus-within:ring-red-500/50 border-red-500/20"
+                        )}>
                             <div className="flex justify-between items-start mb-1">
-                                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-1">Amount (SOL)</span>
+                                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mt-1">
+                                    Amount ({isBuying ? "SOL" : tokenData.symbol})
+                                </span>
                                 <div className="flex flex-col items-end gap-0.5">
                                     <div className="flex items-center gap-1">
-                                        <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" className="w-4 h-4 rounded-full" />
-                                        <span className="text-xs font-bold text-foreground">SOL</span>
+                                        {isBuying ? (
+                                            <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" className="w-4 h-4 rounded-full" />
+                                        ) : (
+                                            <div className="w-4 h-4 rounded-full bg-secondary" />
+                                            // TODO: Add token image here if available in tokenData
+                                        )}
+                                        <span className="text-xs font-bold text-foreground">{balanceLabel}</span>
                                     </div>
-                                    {balance !== null && (
+                                    {currentBalance !== null && (
                                         <button
-                                            onClick={() => setAmount((Math.max(0, balance - 0.01)).toFixed(4))}
+                                            onClick={() => setAmount(isBuying ? (Math.max(0, currentBalance - 0.01)).toFixed(4) : currentBalance.toString())}
                                             className="text-[10px] text-muted-foreground hover:text-purple-400 transition-colors"
                                         >
-                                            Bal: {balance.toFixed(4)}
+                                            Bal: {currentBalance.toLocaleString()}
                                         </button>
                                     )}
                                 </div>
@@ -200,21 +286,33 @@ export function TradePanel({ tokenData }: TradePanelProps) {
 
                         {/* Presets */}
                         <div className="grid grid-cols-4 gap-2">
-                            {["0.01", "0.1", "0.5", "1.0"].map((val) => (
-                                <button
-                                    key={val}
-                                    onClick={() => handlePresetClick(val)}
-                                    className="py-1.5 px-2 bg-secondary/50 hover:bg-secondary border border-border/50 rounded-md text-xs font-medium transition-colors"
-                                >
-                                    {val}
-                                </button>
-                            ))}
+                            {isBuying ? (
+                                ["0.1", "0.5", "1.0", "5.0"].map((val) => (
+                                    <button
+                                        key={val}
+                                        onClick={() => handlePresetClick(val)}
+                                        className="py-1.5 px-2 bg-secondary/50 hover:bg-secondary border border-border/50 rounded-md text-xs font-medium transition-colors"
+                                    >
+                                        {val} SOL
+                                    </button>
+                                ))
+                            ) : (
+                                ["25", "50", "75", "100"].map((val) => (
+                                    <button
+                                        key={val}
+                                        onClick={() => handlePresetClick(val)}
+                                        className="py-1.5 px-2 bg-secondary/50 hover:bg-secondary border border-border/50 rounded-md text-xs font-medium transition-colors"
+                                    >
+                                        {val}%
+                                    </button>
+                                ))
+                            )}
                         </div>
 
                         {/* Info Row */}
                         <div className="flex items-center justify-between text-[10px] text-muted-foreground px-1">
                             <div className="flex items-center gap-1.5">
-                                <span>Slippage: <span className="text-foreground font-medium">0.5%</span></span>
+                                <span>Slippage: <span className="text-foreground font-medium">Auto (0.5%)</span></span>
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <span>Priority: <span className="text-green-400 font-medium">Turbo</span></span>
@@ -230,7 +328,7 @@ export function TradePanel({ tokenData }: TradePanelProps) {
                             >
                                 <div className="flex items-center gap-2">
                                     <Switch checked={showAdvanced} onCheckedChange={setShowAdvanced} />
-                                    <span>Advanced Trading Strategy</span>
+                                    <span>Advanced Strategy</span>
                                 </div>
                                 {showAdvanced ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                             </button>
@@ -267,21 +365,6 @@ export function TradePanel({ tokenData }: TradePanelProps) {
                                         </div>
                                     </div>
 
-                                    {/* Take Profit 2 */}
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div className="bg-card border border-border rounded p-2">
-                                            <span className="text-[10px] text-muted-foreground block mb-1">TP 2 %</span>
-                                            <div className="flex items-center gap-1">
-                                                <span className="text-green-400 text-sm">↑</span>
-                                                <input type="text" value={takeProfit2} onChange={(e) => setTakeProfit2(e.target.value)} className="w-full bg-transparent border-none outline-none text-sm font-medium" />
-                                            </div>
-                                        </div>
-                                        <div className="bg-card border border-border rounded p-2">
-                                            <span className="text-[10px] text-muted-foreground block mb-1">Amount %</span>
-                                            <input type="text" value={tp2Amount} onChange={(e) => setTp2Amount(e.target.value)} className="w-full bg-transparent border-none outline-none text-sm font-medium" />
-                                        </div>
-                                    </div>
-
                                     <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/20 rounded text-[10px] text-yellow-500/80">
                                         <AlertTriangle className="w-3 h-3" />
                                         Strategy is visual-only in this beta.
@@ -290,19 +373,24 @@ export function TradePanel({ tokenData }: TradePanelProps) {
                             )}
                         </div>
 
-                        {/* Buy Button */}
+                        {/* Trade Button Logic */}
                         <button
-                            onClick={handleBuy}
+                            onClick={handleTrade}
                             disabled={isLoading}
-                            className="w-full h-12 bg-[#00ffbd] hover:bg-[#00e6aa] disabled:bg-[#00ffbd]/50 text-black font-bold text-lg rounded-xl shadow-[0_0_20px_rgba(0,255,189,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+                            className={cn(
+                                "w-full h-12 text-black font-bold text-lg rounded-xl active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4 shadow-[0_0_20px_rgba(0,0,0,0.2)]",
+                                isLoading ? "bg-muted cursor-wait" :
+                                    isBuying ? "bg-[#00ffbd] hover:bg-[#00e6aa] shadow-[0_0_20px_rgba(0,255,189,0.3)]" :
+                                        "bg-red-500 hover:bg-red-600 text-white shadow-[0_0_20px_rgba(239,68,68,0.3)]"
+                            )}
                         >
                             {isLoading ? (
                                 <>
                                     <Loader2 className="w-5 h-5 animate-spin" />
-                                    <span>Swapping...</span>
+                                    <span>{isBuying ? "Buying..." : "Selling..."}</span>
                                 </>
                             ) : (
-                                <span>Buy {tokenData.symbol}</span>
+                                <span>{isBuying ? `Buy ${tokenData.symbol}` : `Sell ${tokenData.symbol}`}</span>
                             )}
                         </button>
 
