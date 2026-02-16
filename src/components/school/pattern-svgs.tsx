@@ -97,6 +97,70 @@ export const PatternSVGs = {
             <line x1="72.5" y1="30" x2="72.5" y2="25" stroke="#00ffbd" strokeWidth="2" />
         </svg>
     ),
+    PiercingLine: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Red Candle */}
+            <rect x="25" y="20" width="20" height="50" fill="#ef4444" rx="1" />
+            <line x1="35" y1="20" x2="35" y2="15" stroke="#ef4444" strokeWidth="2" />
+            <line x1="35" y1="70" x2="35" y2="75" stroke="#ef4444" strokeWidth="2" />
+
+            {/* Green Candle (Opens lower, closes > 50% of red) */}
+            <rect x="55" y="35" width="20" height="45" fill="#00ffbd" rx="1" />
+            <line x1="65" y1="80" x2="65" y2="85" stroke="#00ffbd" strokeWidth="2" />
+            <line x1="20" y1="45" x2="80" y2="45" stroke="white" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" /> {/* 50% Mark */}
+        </svg>
+    ),
+    DarkCloudCover: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Green Candle */}
+            <rect x="25" y="30" width="20" height="50" fill="#00ffbd" rx="1" />
+            <line x1="35" y1="30" x2="35" y2="25" stroke="#00ffbd" strokeWidth="2" />
+            <line x1="35" y1="80" x2="35" y2="85" stroke="#00ffbd" strokeWidth="2" />
+
+            {/* Red Candle (Opens higher, closes < 50% of green) */}
+            <rect x="55" y="20" width="20" height="45" fill="#ef4444" rx="1" />
+            <line x1="65" y1="20" x2="65" y2="15" stroke="#ef4444" strokeWidth="2" />
+            <line x1="20" y1="55" x2="80" y2="55" stroke="white" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" /> {/* 50% Mark */}
+        </svg>
+    ),
+    TweezerTop: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Green Candle */}
+            <rect x="25" y="30" width="20" height="40" fill="#00ffbd" rx="1" />
+            <line x1="35" y1="30" x2="35" y2="15" stroke="#00ffbd" strokeWidth="2" /> {/* Matching High */}
+
+            {/* Red Candle */}
+            <rect x="55" y="35" width="20" height="35" fill="#ef4444" rx="1" />
+            <line x1="65" y1="35" x2="65" y2="15" stroke="#ef4444" strokeWidth="2" /> {/* Matching High */}
+
+            <line x1="20" y1="15" x2="80" y2="15" stroke="white" strokeWidth="1" strokeDasharray="2 2" />
+        </svg>
+    ),
+    TweezerBottom: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Red Candle */}
+            <rect x="25" y="20" width="20" height="40" fill="#ef4444" rx="1" />
+            <line x1="35" y1="60" x2="35" y2="85" stroke="#ef4444" strokeWidth="2" /> {/* Matching Low */}
+
+            {/* Green Candle */}
+            <rect x="55" y="30" width="20" height="30" fill="#00ffbd" rx="1" />
+            <line x1="65" y1="60" x2="65" y2="85" stroke="#00ffbd" strokeWidth="2" /> {/* Matching Low */}
+
+            <line x1="20" y1="85" x2="80" y2="85" stroke="white" strokeWidth="1" strokeDasharray="2 2" />
+        </svg>
+    ),
+    Marubozu: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Bullish Marubozu */}
+            <rect x="20" y="10" width="20" height="80" fill="#00ffbd" rx="1" />
+
+            {/* Bearish Marubozu */}
+            <rect x="60" y="10" width="20" height="80" fill="#ef4444" rx="1" />
+
+            <text x="30" y="55" fontSize="8" fill="black" textAnchor="middle" fontWeight="bold">BULL</text>
+            <text x="70" y="55" fontSize="8" fill="black" textAnchor="middle" fontWeight="bold">BEAR</text>
+        </svg>
+    ),
     ThreeBlackCrows: () => (
         <svg viewBox="0 0 100 100" className="w-full h-full p-4">
             {/* 1 */}
@@ -202,6 +266,34 @@ export const PatternSVGs = {
             <line x1="130" y1="65" x2="160" y2="90" stroke="#ef4444" strokeWidth="3" markerEnd="url(#arrowhead-red)" />
         </svg>
     ),
+    DiamondTop: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Diamond Shape */}
+            <polygon points="10,50 100,10 190,50 100,90" stroke="#ef4444" strokeWidth="2" fill="none" strokeDasharray="4 4" />
+            {/* Price Action */}
+            <path d="M 10 50 L 50 30 L 70 70 L 100 10 L 130 70 L 150 30 L 190 50" stroke="white" strokeWidth="2" fill="none" />
+            {/* Breakdown */}
+            <line x1="130" y1="70" x2="160" y2="95" stroke="#ef4444" strokeWidth="3" markerEnd="url(#arrowhead-red)" />
+        </svg>
+    ),
+    Rectangle: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Box */}
+            <rect x="40" y="20" width="120" height="60" stroke="white" strokeWidth="2" fill="none" />
+            {/* Price Action Ping Pong */}
+            <path d="M 20 50 L 40 20 L 60 80 L 80 20 L 100 80 L 120 20 L 140 80 L 160 50" stroke="#00ffbd" strokeWidth="2" fill="none" />
+        </svg>
+    ),
+    SymmetricalTriangle: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Upper Trendline (Down) */}
+            <line x1="20" y1="10" x2="180" y2="50" stroke="white" strokeWidth="2" />
+            {/* Lower Trendline (Up) */}
+            <line x1="20" y1="90" x2="180" y2="50" stroke="white" strokeWidth="2" />
+            {/* Coiling Price Action */}
+            <path d="M 20 10 L 40 85 L 60 20 L 80 75 L 100 30 L 120 65" stroke="#00ffbd" strokeWidth="1" fill="none" />
+        </svg>
+    ),
     Pennant: () => (
         <svg viewBox="0 0 200 100" className="w-full h-full p-4">
             {/* Pole */}
@@ -287,6 +379,32 @@ export const PatternSVGs = {
             <line x1="100" y1="55" x2="180" y2="55" stroke="#00ffbd" strokeWidth="1" /> <text x="185" y="57" fontSize="6" fill="gray">0.5</text>
             <line x1="100" y1="65" x2="180" y2="65" stroke="#00ffbd" strokeWidth="1" /> <text x="185" y="67" fontSize="6" fill="gray">0.618</text>
             <line x1="100" y1="80" x2="180" y2="80" stroke="#ef4444" strokeWidth="1" /> <text x="185" y="82" fontSize="6" fill="gray">1 (Low)</text>
+        </svg>
+    ),
+    IchimokuCloud: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Cloud */}
+            <path d="M 20 40 L 40 30 L 80 50 L 120 40 L 160 60 L 180 50 L 180 70 L 160 80 L 120 60 L 80 70 L 40 50 L 20 60 Z" fill="#00ffbd" fillOpacity="0.2" stroke="none" />
+            {/* Base Line (Kijun) */}
+            <path d="M 10 70 L 40 60 L 80 65 L 120 50 L 190 60" stroke="#ef4444" strokeWidth="2" fill="none" />
+            {/* Conversion Line (Tenkan) */}
+            <path d="M 10 65 L 40 50 L 80 55 L 120 40 L 190 50" stroke="#00ffbd" strokeWidth="2" fill="none" />
+        </svg>
+    ),
+    ATR: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Volatility Line */}
+            <path d="M 10 80 Q 50 80 80 60 Q 120 40 150 70 Q 190 20" stroke="#eab308" strokeWidth="3" fill="none" />
+            <text x="10" y="20" fill="white" fontSize="8">High Volatility = High ATR</text>
+        </svg>
+    ),
+    OnBalanceVolume: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Zero Line */}
+            <line x1="10" y1="50" x2="190" y2="50" stroke="gray" strokeWidth="1" strokeDasharray="2 2" />
+            {/* OBV Line */}
+            <path d="M 10 50 L 30 60 L 50 40 L 80 70 L 110 30 L 140 40 L 190 10" stroke="#00ffbd" strokeWidth="3" fill="none" />
+            <text x="10" y="90" fill="white" fontSize="8">Cumulative Buying Volume</text>
         </svg>
     ),
     Stochastic: () => (

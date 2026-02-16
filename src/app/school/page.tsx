@@ -100,6 +100,41 @@ export default function TradingSchoolPage() {
                                 visual={<PatternSVGs.ThreeBlackCrows />}
                             />
                             <PatternCard
+                                title="Piercing Line"
+                                category="Candlestick"
+                                sentiment="Bullish"
+                                description="A two-candle pattern: A long red candle followed by a green candle that opens lower but closes above the midpoint of the red candle. Signals a potential reversal."
+                                visual={<PatternSVGs.PiercingLine />}
+                            />
+                            <PatternCard
+                                title="Dark Cloud Cover"
+                                category="Candlestick"
+                                sentiment="Bearish"
+                                description="The bearish opposite of the Piercing Line. A green candle followed by a red candle that opens higher but closes below the midpoint of the green candle."
+                                visual={<PatternSVGs.DarkCloudCover />}
+                            />
+                            <PatternCard
+                                title="Tweezer Top"
+                                category="Candlestick"
+                                sentiment="Bearish"
+                                description="Two or more candles with matching highs. Indicates that buyers pushed price to the same level twice but failed to break through. Resistance is strong."
+                                visual={<PatternSVGs.TweezerTop />}
+                            />
+                            <PatternCard
+                                title="Tweezer Bottom"
+                                category="Candlestick"
+                                sentiment="Bullish"
+                                description="Two or more candles with matching lows. Indicates that sellers pushed price to the same level twice but failed to break lower. Support is holding."
+                                visual={<PatternSVGs.TweezerBottom />}
+                            />
+                            <PatternCard
+                                title="Marubozu"
+                                category="Candlestick"
+                                sentiment="Strong Trend"
+                                description="A candle with no wicks (shadows). The open and close are at the extreme ends. Indicates extreme conviction from either buyers (green) or sellers (red)."
+                                visual={<PatternSVGs.Marubozu />}
+                            />
+                            <PatternCard
                                 title="Doji"
                                 category="Candlestick"
                                 sentiment="Neutral"
@@ -186,6 +221,27 @@ export default function TradingSchoolPage() {
                                 description="A small symmetrical triangle following a sharp move up (pole). Brief consolidation before the trend continues in the same direction."
                                 visual={<PatternSVGs.Pennant />}
                             />
+                            <PatternCard
+                                title="Diamond Top"
+                                category="Chart Pattern"
+                                sentiment="Bearish"
+                                description="A rare reversal pattern that looks like a diamond. It forms when price action widens (broadening) and then narrows (triangle). Signals a major top."
+                                visual={<PatternSVGs.DiamondTop />}
+                            />
+                            <PatternCard
+                                title="Rectangle (Box)"
+                                category="Chart Pattern"
+                                sentiment="Neutral"
+                                description="Price moves sideways between parallel support and resistance lines. Traders trade the range or wait for a confirmed breakout/breakdown."
+                                visual={<PatternSVGs.Rectangle />}
+                            />
+                            <PatternCard
+                                title="Symmetrical Triangle"
+                                category="Chart Pattern"
+                                sentiment="Neutral"
+                                description="Price consolidates with lower highs and higher lows. The breakout direction is hard to predict, but the move is usually explosive."
+                                visual={<PatternSVGs.SymmetricalTriangle />}
+                            />
                         </div>
                     </TabsContent>
 
@@ -244,6 +300,27 @@ export default function TradingSchoolPage() {
                                 sentiment="Neutral"
                                 description="A momentum indicator comparing a particular closing price to a range of prices over time. Signals overbought/oversold conditions, similar to RSI but faster."
                                 visual={<PatternSVGs.Stochastic />}
+                            />
+                            <PatternCard
+                                title="Ichimoku Cloud"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="A comprehensive indicator that defines support/resistance, trend direction, momentum, and buy/sell signals. The 'Cloud' (Kumo) is the key area."
+                                visual={<PatternSVGs.IchimokuCloud />}
+                            />
+                            <PatternCard
+                                title="Average True Range (ATR)"
+                                category="Indicator"
+                                sentiment="Volatility"
+                                description="Measures market volatility by decomposing the entire range of an asset price for that period. Higher ATR means higher volatility. Used for stop-loss placement."
+                                visual={<PatternSVGs.ATR />}
+                            />
+                            <PatternCard
+                                title="On-Balance Volume (OBV)"
+                                category="Indicator"
+                                sentiment="Momentum"
+                                description="Uses volume flow to predict changes in stock price. Smart money can be seen flowing into the security by a rising OBV when price is flat or falling."
+                                visual={<PatternSVGs.OnBalanceVolume />}
                             />
                         </div>
                     </TabsContent>
