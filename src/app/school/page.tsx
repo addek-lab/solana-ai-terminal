@@ -135,6 +135,27 @@ export default function TradingSchoolPage() {
                                 visual={<PatternSVGs.Marubozu />}
                             />
                             <PatternCard
+                                title="Spinning Top"
+                                category="Candlestick"
+                                sentiment="Neutral"
+                                description="A small real body centered between long upper and lower shadows. Represents complete indecision between buyers and sellers. Often signals a potential trend reversal."
+                                visual={<PatternSVGs.SpinningTop />}
+                            />
+                            <PatternCard
+                                title="Hanging Man"
+                                category="Candlestick"
+                                sentiment="Bearish"
+                                description="Looks like a Hammer but forms at the peak of an uptrend. Indicates that while buyers pushed price back up, aggressive selling pressure is starting to emerge."
+                                visual={<PatternSVGs.HangingMan />}
+                            />
+                            <PatternCard
+                                title="Inverted Hammer"
+                                category="Candlestick"
+                                sentiment="Bullish"
+                                description="Looks like a Shooting Star but forms at the bottom of a downtrend. Indicates that buyers are starting to test higher prices, even if sellers pushed it back down."
+                                visual={<PatternSVGs.InvertedHammer />}
+                            />
+                            <PatternCard
                                 title="Doji"
                                 category="Candlestick"
                                 sentiment="Neutral"
@@ -236,6 +257,20 @@ export default function TradingSchoolPage() {
                                 visual={<PatternSVGs.Rectangle />}
                             />
                             <PatternCard
+                                title="Triple Top"
+                                category="Chart Pattern"
+                                sentiment="Bearish"
+                                description="Three distinct peaks at the same resistance level. A more powerful reversal signal than a Double Top, indicating buyers have failed three times to break higher."
+                                visual={<PatternSVGs.TripleTop />}
+                            />
+                            <PatternCard
+                                title="Rounding Bottom"
+                                category="Chart Pattern"
+                                sentiment="Bullish"
+                                description="A gradual, bowl-shaped reversal pattern (Saucer). Represents a slow shift in sentiment from bearish to bullish as long-term investors accumulate."
+                                visual={<PatternSVGs.RoundingBottom />}
+                            />
+                            <PatternCard
                                 title="Symmetrical Triangle"
                                 category="Chart Pattern"
                                 sentiment="Neutral"
@@ -321,6 +356,27 @@ export default function TradingSchoolPage() {
                                 sentiment="Momentum"
                                 description="Uses volume flow to predict changes in stock price. Smart money can be seen flowing into the security by a rising OBV when price is flat or falling."
                                 visual={<PatternSVGs.OnBalanceVolume />}
+                            />
+                            <PatternCard
+                                title="Pivot Points"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="Calculated support and resistance levels based on the previous period's high, low, and close. Traders use these as key areas for reversals or breakouts."
+                                visual={<PatternSVGs.PivotPoints />}
+                            />
+                            <PatternCard
+                                title="VWAP"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="Volume Weighted Average Price. The 'true' average price paid by traders. Institutions use it as a benchmark. Price above VWAP is bullish, below is bearish."
+                                visual={<PatternSVGs.VWAP />}
+                            />
+                            <PatternCard
+                                title="Average Directional Index (ADX)"
+                                category="Indicator"
+                                sentiment="Strong Trend"
+                                description="Measures the strength of a trend, not the direction. ADX > 25 indicates a strong trend (bull or bear). ADX < 20 indicates a weak or ranging market."
+                                visual={<PatternSVGs.ADX />}
                             />
                         </div>
                     </TabsContent>

@@ -149,6 +149,34 @@ export const PatternSVGs = {
             <line x1="20" y1="85" x2="80" y2="85" stroke="white" strokeWidth="1" strokeDasharray="2 2" />
         </svg>
     ),
+    SpinningTop: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            <line x1="50" y1="20" x2="50" y2="80" stroke="#00ffbd" strokeWidth="2" />
+            <rect x="35" y="40" width="30" height="20" fill="#00ffbd" rx="1" />
+        </svg>
+    ),
+    HangingMan: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Uptrend */}
+            <line x1="10" y1="90" x2="30" y2="60" stroke="#00ffbd" strokeWidth="2" strokeDasharray="4 4" />
+
+            {/* Hanging Man (Red Hammer at Top) */}
+            <rect x="40" y="40" width="20" height="10" fill="#ef4444" rx="1" />
+            <line x1="50" y1="50" x2="50" y2="85" stroke="#ef4444" strokeWidth="2" />
+            <line x1="50" y1="40" x2="50" y2="38" stroke="#ef4444" strokeWidth="2" />
+        </svg>
+    ),
+    InvertedHammer: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* Downtrend */}
+            <line x1="10" y1="10" x2="30" y2="40" stroke="#ef4444" strokeWidth="2" strokeDasharray="4 4" />
+
+            {/* Inverted Hammer (Green Shooting Star at Bottom) */}
+            <rect x="40" y="60" width="20" height="10" fill="#00ffbd" rx="1" />
+            <line x1="50" y1="60" x2="50" y2="25" stroke="#00ffbd" strokeWidth="2" />
+            <line x1="50" y1="70" x2="50" y2="72" stroke="#00ffbd" strokeWidth="2" />
+        </svg>
+    ),
     Marubozu: () => (
         <svg viewBox="0 0 100 100" className="w-full h-full p-4">
             {/* Bullish Marubozu */}
@@ -294,6 +322,24 @@ export const PatternSVGs = {
             <path d="M 20 10 L 40 85 L 60 20 L 80 75 L 100 30 L 120 65" stroke="#00ffbd" strokeWidth="1" fill="none" />
         </svg>
     ),
+    TripleTop: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Three Peaks */}
+            <path d="M 10 90 L 40 20 L 70 80 L 100 20 L 130 80 L 160 20 L 190 90" stroke="#ef4444" strokeWidth="2" fill="none" />
+            {/* Resistance Line */}
+            <line x1="10" y1="20" x2="190" y2="20" stroke="gray" strokeWidth="1" strokeDasharray="4 4" />
+            {/* Breakdown */}
+            <line x1="160" y1="20" x2="190" y2="90" stroke="#ef4444" strokeWidth="3" markerEnd="url(#arrowhead-red)" />
+        </svg>
+    ),
+    RoundingBottom: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Saucer Shape */}
+            <path d="M 10 20 Q 10 90 100 90 Q 190 90 190 20" stroke="#00ffbd" strokeWidth="2" fill="none" />
+            {/* Neckline */}
+            <line x1="10" y1="20" x2="190" y2="20" stroke="gray" strokeWidth="1" strokeDasharray="4 4" />
+        </svg>
+    ),
     Pennant: () => (
         <svg viewBox="0 0 200 100" className="w-full h-full p-4">
             {/* Pole */}
@@ -405,6 +451,31 @@ export const PatternSVGs = {
             {/* OBV Line */}
             <path d="M 10 50 L 30 60 L 50 40 L 80 70 L 110 30 L 140 40 L 190 10" stroke="#00ffbd" strokeWidth="3" fill="none" />
             <text x="10" y="90" fill="white" fontSize="8">Cumulative Buying Volume</text>
+        </svg>
+    ),
+    PivotPoints: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            <line x1="10" y1="20" x2="190" y2="20" stroke="#ef4444" strokeWidth="1" strokeDasharray="2 2" /> <text x="10" y="18" fontSize="8" fill="gray">R1</text>
+            <line x1="10" y1="50" x2="190" y2="50" stroke="yellow" strokeWidth="1" strokeDasharray="4 4" /> <text x="10" y="48" fontSize="8" fill="gray">Pivot</text>
+            <line x1="10" y1="80" x2="190" y2="80" stroke="#00ffbd" strokeWidth="1" strokeDasharray="2 2" /> <text x="10" y="78" fontSize="8" fill="gray">S1</text>
+            <path d="M 10 90 L 50 30 L 90 60 L 130 40 L 190 70" stroke="white" strokeWidth="2" fill="none" />
+        </svg>
+    ),
+    VWAP: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Price */}
+            <path d="M 10 80 L 30 60 L 50 70 L 80 40 L 120 50 L 160 20" stroke="white" strokeWidth="1" fill="none" opacity="0.5" />
+            {/* VWAP Line */}
+            <path d="M 10 75 Q 80 65 160 30" stroke="#3b82f6" strokeWidth="2" fill="none" />
+            <text x="140" y="80" fontSize="8" fill="#3b82f6">Volume Weighted Avg</text>
+        </svg>
+    ),
+    ADX: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* ADX Line */}
+            <path d="M 10 80 Q 50 70 80 20 Q 120 30 190 10" stroke="#white" strokeWidth="3" fill="none" />
+            <line x1="10" y1="50" x2="190" y2="50" stroke="gray" strokeWidth="1" strokeDasharray="2 2" />
+            <text x="10" y="45" fontSize="8" fill="gray">25 (Trending)</text>
         </svg>
     ),
     Stochastic: () => (
