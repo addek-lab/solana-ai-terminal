@@ -18,82 +18,14 @@ interface AnalysisData {
     supportLevel: number
     resistanceLevel: number
     stopLossLevel: number
-    candlestickPatterns: string[]
-    chartPatterns: string[]
-    technicalIndicators: string[]
-}
-
-import { PatternSVGs } from "@/components/school/pattern-svgs"
-
-// Helper to normalize and match pattern names to SVGs
-const getPatternSVG = (name: string) => {
-    // Remove spaces and special characters to match component keys
-    const normalized = name.replace(/[^a-zA-Z0-9]/g, "");
-
-    // Explicit mapping for edge cases or exact matches
-    const map: Record<string, keyof typeof PatternSVGs> = {
-        "Hammer": "Hammer",
-        "ShootingStar": "ShootingStar",
-        "BullishEngulfing": "EngulfingBullish",
-        "BearishEngulfing": "EngulfingBearish",
-        "MorningStar": "MorningStar",
-        "ThreeWhiteSoldiers": "ThreeWhiteSoldiers",
-        "ThreeBlackCrows": "ThreeBlackCrows",
-        "PiercingLine": "PiercingLine",
-        "DarkCloudCover": "DarkCloudCover",
-        "TweezerTop": "TweezerTop",
-        "TweezerBottom": "TweezerBottom",
-        "Marubozu": "Marubozu",
-        "SpinningTop": "SpinningTop",
-        "HangingMan": "HangingMan",
-        "InvertedHammer": "InvertedHammer",
-        "Doji": "Doji",
-        "HeadandShoulders": "HeadAndShoulders",
-        "DoubleTop": "DoubleTop",
-        "DoubleBottom": "DoubleBottom",
-        "TripleTop": "TripleTop",
-        "AscendingTriangle": "AscendingTriangle",
-        "SymmetricalTriangle": "SymmetricalTriangle",
-        "BullFlag": "BullFlag",
-        "Pennant": "Pennant",
-        "FallingWedge": "FallingWedge",
-        "RisingWedge": "RisingWedge",
-        "DiamondTop": "DiamondTop",
-        "Rectangle": "Rectangle",
-        "RoundingBottom": "RoundingBottom",
-        "CupandHandle": "CupAndHandle",
-        "RSI": "RSI",
-        "MACD": "MACD",
-        "BollingerBands": "BollingerBands",
-        "MovingAverages": "MovingAverages",
-        "Fibonacci": "Fibonacci",
-        "Stochastic": "Stochastic",
-        "IchimokuCloud": "IchimokuCloud",
-        "ATR": "ATR",
-        "OBV": "OnBalanceVolume",
-        "OnBalanceVolume": "OnBalanceVolume",
-        "PivotPoints": "PivotPoints",
-        "VWAP": "VWAP",
-        "ADX": "ADX"
-    };
-
-    const key = map[normalized] || Object.keys(PatternSVGs).find(k => k.toLowerCase() === normalized.toLowerCase()) as keyof typeof PatternSVGs;
-
-    if (key && PatternSVGs[key]) {
-        const Component = PatternSVGs[key];
-        return <Component />;
-    }
-    return null;
 }
 
 export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisData | null, tokenData?: any }) {
-    // ... existing hooks ...
     const { addToken, hasToken } = usePortfolio()
     const [added, setAdded] = useState(false)
 
     if (!analysis) return null
 
-    // ... existing handleSave ...
     const isSaved = tokenData ? hasToken(tokenData.address) : false
 
     const handleSave = () => {
@@ -115,20 +47,12 @@ export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisD
         setTimeout(() => setAdded(false), 2000)
     }
 
-    // Combined patterns for display
-    const detectedPatterns = [
-        ...analysis.candlestickPatterns.map(p => ({ name: p, type: "Candlestick" })),
-        ...analysis.chartPatterns.map(p => ({ name: p, type: "Chart Pattern" })),
-        ...analysis.technicalIndicators.map(p => ({ name: p, type: "Indicator" }))
-    ].filter(p => getPatternSVG(p.name) !== null);
-
     return (
         <div className="bg-card rounded-xl border border-border overflow-hidden animate-in fade-in slide-in-from-top-4 duration-500 shadow-xl">
-            {/* ... Header ... */}
+            {/* Header: Verdict & Confidence */}
             <div className={`p-6 flex items-center justify-between border-b border-border ${analysis.verdict === "BUY" || analysis.verdict === "DEGEN PLAY" ? "bg-green-500/10" :
                 analysis.verdict === "SELL" ? "bg-red-500/10" : "bg-yellow-500/10"
                 }`}>
-                {/* ... existing header content ... */}
                 <div className="flex items-center gap-6">
                     <div className={`px-6 py-2 rounded-full text-lg font-black tracking-wider uppercase flex items-center gap-3 ${analysis.verdict === "BUY" || analysis.verdict === "DEGEN PLAY" ? "bg-green-500 text-white shadow-lg shadow-green-500/20" :
                         analysis.verdict === "SELL" ? "bg-red-500 text-white shadow-lg shadow-red-500/20" : "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20"
@@ -235,26 +159,6 @@ export function AIAnalysisDisplay({ analysis, tokenData }: { analysis: AnalysisD
                     </div>
                 </div>
             </div>
-
-            {/* Detected Technical Signals */}
-            {detectedPatterns.length > 0 && (
-                <div className="border-t border-border p-8 bg-secondary/5">
-                    <h4 className="font-bold flex items-center gap-3 text-lg uppercase tracking-wider mb-6">
-                        <Zap className="w-6 h-6 text-yellow-500" /> Detected Academy Signals
-                    </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {detectedPatterns.map((pattern, i) => (
-                            <div key={i} className="bg-card rounded-xl border border-border p-4 flex flex-col items-center text-center hover:border-primary/50 transition-colors">
-                                <div className="w-16 h-16 mb-3 text-primary">
-                                    {getPatternSVG(pattern.name)}
-                                </div>
-                                <div className="text-xs font-mono text-muted-foreground mb-1 uppercase tracking-wider">{pattern.type}</div>
-                                <div className="font-bold">{pattern.name}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
 
             {/* Visual Technical Analysis */}
             {(analysis.priceTarget > 0 || analysis.supportLevel > 0) && (

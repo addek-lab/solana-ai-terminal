@@ -19,10 +19,6 @@ interface AnalysisResult {
     supportLevel: number;
     resistanceLevel: number;
     stopLossLevel: number;
-    // New fields for Academy Pattern Integration
-    candlestickPatterns: string[];
-    chartPatterns: string[];
-    technicalIndicators: string[];
     error?: string;
 }
 
@@ -69,25 +65,9 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
             priceTarget: { type: SchemaType.NUMBER, description: "Primary Take Profit price in USD" },
             supportLevel: { type: SchemaType.NUMBER, description: "Nearest Support price in USD" },
             resistanceLevel: { type: SchemaType.NUMBER, description: "Nearest Resistance price in USD" },
-            stopLossLevel: { type: SchemaType.NUMBER, description: "Stop Loss price in USD" },
-            // Academy Patterns
-            candlestickPatterns: {
-                type: SchemaType.ARRAY,
-                items: { type: SchemaType.STRING },
-                description: "Detected candlestick patterns (e.g., ' Hammer', 'Doji', 'Engulfing')"
-            },
-            chartPatterns: {
-                type: SchemaType.ARRAY,
-                items: { type: SchemaType.STRING },
-                description: "Detected chart patterns (e.g., 'Head and Shoulders', 'Bull Flag')"
-            },
-            technicalIndicators: {
-                type: SchemaType.ARRAY,
-                items: { type: SchemaType.STRING },
-                description: "Relevant indicators (e.g., 'RSI Divergence', 'MACD Cross')"
-            }
+            stopLossLevel: { type: SchemaType.NUMBER, description: "Stop Loss price in USD" }
         },
-        required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning", "priceTarget", "supportLevel", "resistanceLevel", "stopLossLevel", "candlestickPatterns", "chartPatterns", "technicalIndicators"]
+        required: ["verdict", "confidence", "riskLevel", "action", "entry", "stopLoss", "takeProfit", "reasoning", "priceTarget", "supportLevel", "resistanceLevel", "stopLossLevel"]
     };
 
     // Construct Prompt - Add "Deep Thinking" context if enabled
@@ -136,10 +116,6 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
     - If liquidity is < $100k or Volume < $10k, flag as EXTREME RISK immediately.
     - **CRITICAL: Provide specific USD numerical values for priceTarget, supportLevel, resistanceLevel, and stopLossLevel.** These will be used to draw a chart.
     - For text fields (entry, stopLoss, takeProfit), you can still use Market Cap if preferred, but the *Level* fields must be USD numbers.
-    - **ACADEMY PATTERN MATCHING**: Identify and list any of the following specific patterns if they are likely present or relevant to the price action:
-        - **Candlesticks**: Hammer, Shooting Star, Bullish Engulfing, Bearish Engulfing, Morning Star, Three White Soldiers, Three Black Crows, Piercing Line, Dark Cloud Cover, Tweezer Top, Tweezer Bottom, Marubozu, Spinning Top, Hanging Man, Inverted Hammer, Doji.
-        - **Chart Patterns**: Head and Shoulders, Double Top, Double Bottom, Triple Top, Ascending Triangle, Symmetrical Triangle, Bull Flag, Pennant, Falling Wedge, Rising Wedge, Diamond Top, Rectangle, Rounding Bottom, Cup and Handle.
-        - **Indicators**: RSI, MACD, Bollinger Bands, Moving Averages, Fibonacci, Stochastic, Ichimoku Cloud, ATR, OBV, Pivot Points, VWAP, ADX.
     - Your goal is to maximize profit and protect capital. 
     `;
 
@@ -171,9 +147,6 @@ export async function analyzeTokenAction(tokenData: any, options?: { deepThinkin
             supportLevel: 0,
             resistanceLevel: 0,
             stopLossLevel: 0,
-            candlestickPatterns: [],
-            chartPatterns: [],
-            technicalIndicators: [],
             error: error.message || "Failed to generate analysis."
         };
     }
