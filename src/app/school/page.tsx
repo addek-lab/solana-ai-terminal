@@ -58,11 +58,32 @@ export default function TradingSchoolPage() {
                                 visual={<PatternSVGs.Hammer />}
                             />
                             <PatternCard
+                                title="Shooting Star"
+                                category="Candlestick"
+                                sentiment="Bearish"
+                                description="The inverse of a Hammer, appearing at the top of an uptrend. A long upper wick showing buyers pushed up but were rejected by sellers. Signals a potential top."
+                                visual={<PatternSVGs.ShootingStar />}
+                            />
+                            <PatternCard
                                 title="Bullish Engulfing"
                                 category="Candlestick"
                                 sentiment="Bullish"
                                 description="A two-candle pattern where a small red candle is completely 'engulfed' by a larger green candle. This shows a decisive shift in momentum from sellers to buyers."
                                 visual={<PatternSVGs.EngulfingBullish />}
+                            />
+                            <PatternCard
+                                title="Bearish Engulfing"
+                                category="Candlestick"
+                                sentiment="Bearish"
+                                description="A top reversal pattern where a small green candle is followed by a large red candle that completely eclipses it. Signals that bears have taken control."
+                                visual={<PatternSVGs.EngulfingBearish />}
+                            />
+                            <PatternCard
+                                title="Morning Star"
+                                category="Candlestick"
+                                sentiment="Bullish"
+                                description="A three-candle pattern: A large red candle, a small-bodied candle (indecision), and a large green candle. A powerful reversal signal often found at bottoms."
+                                visual={<PatternSVGs.MorningStar />}
                             />
                             <PatternCard
                                 title="Doji"
@@ -103,11 +124,32 @@ export default function TradingSchoolPage() {
                                 visual={<PatternSVGs.DoubleBottom />}
                             />
                             <PatternCard
+                                title="Double Top"
+                                category="Chart Pattern"
+                                sentiment="Bearish"
+                                description="An 'M' shaped pattern where price tests a high twice and fails to break higher. A break below the support level signals a trend reversal."
+                                visual={<PatternSVGs.DoubleTop />}
+                            />
+                            <PatternCard
                                 title="Ascending Triangle"
                                 category="Chart Pattern"
                                 sentiment="Bullish"
                                 description="A continuation pattern with a flat resistance line and rising support line. Buyers are getting more aggressive, pushing lows higher until price breakouts upwards."
                                 visual={<PatternSVGs.AscendingTriangle />}
+                            />
+                            <PatternCard
+                                title="Bull Flag"
+                                category="Chart Pattern"
+                                sentiment="Bullish"
+                                description="A continuation pattern with a sharp price rise (pole) followed by a channel of consolidation (flag). Breakouts usually continue the previous trend."
+                                visual={<PatternSVGs.BullFlag />}
+                            />
+                            <PatternCard
+                                title="Cup and Handle"
+                                category="Chart Pattern"
+                                sentiment="Bullish"
+                                description="A bullish continuation pattern resembling a cup with a handle. The handle is a final consolidation before the price breaks out to new highs."
+                                visual={<PatternSVGs.CupAndHandle />}
                             />
                         </div>
                     </TabsContent>
@@ -133,13 +175,26 @@ export default function TradingSchoolPage() {
                                 description="A momentum oscillator measuring the speed of price movements. RSI > 70 is 'Overbought' (potential sell), and RSI < 30 is 'Oversold' (potential buy). Divergence is a key signal."
                                 visual={<PatternSVGs.RSI />}
                             />
-                            {/* Placeholder for MACD if we had the SVG ready or just reuse visual style */}
                             <PatternCard
                                 title="MACD"
                                 category="Indicator"
                                 sentiment="Neutral"
                                 description="Moving Average Convergence Divergence. Shows the relationship between two moving averages. Crossovers of the signal line and histogram flips are used as buy/sell signals."
-                                visual={<PatternSVGs.MACD />} // Assuming we added this to PatternSVGs
+                                visual={<PatternSVGs.MACD />}
+                            />
+                            <PatternCard
+                                title="Bollinger Bands"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="Consists of a moving average and two standard deviation bands. Price touching the upper band indicates overbought, while touching the lower indicating oversold. Squeezes signal explosive moves."
+                                visual={<PatternSVGs.BollingerBands />}
+                            />
+                            <PatternCard
+                                title="Moving Averages (SMA/EMA)"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="Smooths out price data to identify the trend direction. Crosses (like the Golden Cross or Death Cross) are major long-term signals. 50 and 200 periods are standard."
+                                visual={<PatternSVGs.MovingAverages />}
                             />
                         </div>
                     </TabsContent>
