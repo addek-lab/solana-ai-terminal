@@ -5,7 +5,7 @@ import Link from "next/link"
 import { WalletConnectButton } from "@/components/providers/client-wallet-provider"
 import { LogoutButton } from "@/components/auth/logout-button"
 import { Button } from "@/components/ui/button"
-import { Moon, Sun } from "lucide-react"
+import { Moon, Sun, BookOpen } from "lucide-react"
 import { useTheme } from "next-themes"
 
 export function TerminalHeader() {
@@ -21,6 +21,12 @@ export function TerminalHeader() {
                         Solana AI Terminal
                     </h1>
                 </Link>
+                <div className="hidden md:flex items-center gap-4 ml-6">
+                    <Link href="/school" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" />
+                        Academy
+                    </Link>
+                </div>
             </div>
 
             <div className="flex items-center gap-2 md:gap-4">
