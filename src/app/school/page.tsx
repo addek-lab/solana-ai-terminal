@@ -4,11 +4,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PatternCard } from "@/components/school/pattern-card"
 import { PatternSVGs } from "@/components/school/pattern-svgs"
 import { Separator } from "@/components/ui/separator"
-import { BookOpen, TrendingUp, Activity, BarChart2 } from "lucide-react"
+import { BookOpen, TrendingUp, Activity, BarChart2, ArrowLeft } from "lucide-react"
+import { TerminalHeader } from "@/components/terminal/terminal-header"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 export default function TradingSchoolPage() {
     return (
         <div className="flex flex-col min-h-screen">
+            <TerminalHeader />
             {/* Header */}
             <div className="py-12 bg-gradient-to-b from-background to-secondary/10 border-b border-border">
                 <div className="container mx-auto px-4 text-center max-w-3xl">
@@ -19,9 +23,15 @@ export default function TradingSchoolPage() {
                     <h1 className="text-4xl md:text-6xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-500 mb-6 tracking-tight">
                         Master the Charts
                     </h1>
-                    <p className="text-xl text-muted-foreground leading-relaxed">
+                    <p className="text-xl text-muted-foreground leading-relaxed mb-8">
                         Learn the technical patterns used by pro traders to identify reversals, continuations, and market sentiment.
                     </p>
+                    <Link href="/terminal">
+                        <Button variant="outline" className="gap-2">
+                            <ArrowLeft className="w-4 h-4" />
+                            Back to Terminal
+                        </Button>
+                    </Link>
                 </div>
             </div>
 
