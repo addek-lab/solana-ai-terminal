@@ -86,6 +86,20 @@ export default function TradingSchoolPage() {
                                 visual={<PatternSVGs.MorningStar />}
                             />
                             <PatternCard
+                                title="Three White Soldiers"
+                                category="Candlestick"
+                                sentiment="Bullish"
+                                description="Three consecutive long green candles with higher closes. Indicates very strong buying pressure and a reliable reversal from a downtrend."
+                                visual={<PatternSVGs.ThreeWhiteSoldiers />}
+                            />
+                            <PatternCard
+                                title="Three Black Crows"
+                                category="Candlestick"
+                                sentiment="Bearish"
+                                description="Three consecutive long red candles with lower closes. Indicates very strong selling pressure and a reliable reversal from an uptrend."
+                                visual={<PatternSVGs.ThreeBlackCrows />}
+                            />
+                            <PatternCard
                                 title="Doji"
                                 category="Candlestick"
                                 sentiment="Neutral"
@@ -151,6 +165,27 @@ export default function TradingSchoolPage() {
                                 description="A bullish continuation pattern resembling a cup with a handle. The handle is a final consolidation before the price breaks out to new highs."
                                 visual={<PatternSVGs.CupAndHandle />}
                             />
+                            <PatternCard
+                                title="Falling Wedge"
+                                category="Chart Pattern"
+                                sentiment="Bullish"
+                                description="A bullish pattern where price consolidation is narrowing but tilting downwards. It suggests selling pressure is waning and a breakout to the upside is imminent."
+                                visual={<PatternSVGs.FallingWedge />}
+                            />
+                            <PatternCard
+                                title="Rising Wedge"
+                                category="Chart Pattern"
+                                sentiment="Bearish"
+                                description="A bearish pattern where price consolidation is narrowing and tilting upwards. It suggests buying pressure is fading and a breakdown is likely."
+                                visual={<PatternSVGs.RisingWedge />}
+                            />
+                            <PatternCard
+                                title="Bullish Pennant"
+                                category="Chart Pattern"
+                                sentiment="Bullish"
+                                description="A small symmetrical triangle following a sharp move up (pole). Brief consolidation before the trend continues in the same direction."
+                                visual={<PatternSVGs.Pennant />}
+                            />
                         </div>
                     </TabsContent>
 
@@ -195,6 +230,20 @@ export default function TradingSchoolPage() {
                                 sentiment="Neutral"
                                 description="Smooths out price data to identify the trend direction. Crosses (like the Golden Cross or Death Cross) are major long-term signals. 50 and 200 periods are standard."
                                 visual={<PatternSVGs.MovingAverages />}
+                            />
+                            <PatternCard
+                                title="Fibonacci Retracement"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="Horizontal lines indicating where support and resistance are likely to occur. Key levels are 38.2%, 50%, and 61.8% of the previous move."
+                                visual={<PatternSVGs.Fibonacci />}
+                            />
+                            <PatternCard
+                                title="Stochastic Oscillator"
+                                category="Indicator"
+                                sentiment="Neutral"
+                                description="A momentum indicator comparing a particular closing price to a range of prices over time. Signals overbought/oversold conditions, similar to RSI but faster."
+                                visual={<PatternSVGs.Stochastic />}
                             />
                         </div>
                     </TabsContent>

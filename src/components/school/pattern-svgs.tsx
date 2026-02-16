@@ -82,6 +82,36 @@ export const PatternSVGs = {
             <line x1="60" y1="70" x2="60" y2="75" stroke="#ef4444" strokeWidth="2" />
         </svg>
     ),
+    ThreeWhiteSoldiers: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* 1 */}
+            <rect x="20" y="60" width="15" height="25" fill="#00ffbd" rx="1" />
+            <line x1="27.5" y1="60" x2="27.5" y2="55" stroke="#00ffbd" strokeWidth="2" />
+
+            {/* 2 */}
+            <rect x="42.5" y="45" width="15" height="25" fill="#00ffbd" rx="1" />
+            <line x1="50" y1="45" x2="50" y2="40" stroke="#00ffbd" strokeWidth="2" />
+
+            {/* 3 */}
+            <rect x="65" y="30" width="15" height="25" fill="#00ffbd" rx="1" />
+            <line x1="72.5" y1="30" x2="72.5" y2="25" stroke="#00ffbd" strokeWidth="2" />
+        </svg>
+    ),
+    ThreeBlackCrows: () => (
+        <svg viewBox="0 0 100 100" className="w-full h-full p-4">
+            {/* 1 */}
+            <rect x="20" y="20" width="15" height="25" fill="#ef4444" rx="1" />
+            <line x1="27.5" y1="45" x2="27.5" y2="50" stroke="#ef4444" strokeWidth="2" />
+
+            {/* 2 */}
+            <rect x="42.5" y="35" width="15" height="25" fill="#ef4444" rx="1" />
+            <line x1="50" y1="60" x2="50" y2="65" stroke="#ef4444" strokeWidth="2" />
+
+            {/* 3 */}
+            <rect x="65" y="50" width="15" height="25" fill="#ef4444" rx="1" />
+            <line x1="72.5" y1="75" x2="72.5" y2="80" stroke="#ef4444" strokeWidth="2" />
+        </svg>
+    ),
     Doji: () => (
         <svg viewBox="0 0 100 100" className="w-full h-full p-4">
             <line x1="20" y1="80" x2="40" y2="50" stroke="#00ffbd" strokeWidth="2" />
@@ -148,6 +178,43 @@ export const PatternSVGs = {
             <line x1="20" y1="20" x2="180" y2="20" stroke="gray" strokeWidth="1" strokeDasharray="4 4" />
         </svg>
     ),
+    FallingWedge: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Upper Trendline (Steep down) */}
+            <line x1="20" y1="10" x2="140" y2="60" stroke="#ef4444" strokeWidth="2" />
+            {/* Lower Trendline (Shallow down) */}
+            <line x1="20" y1="50" x2="140" y2="80" stroke="#00ffbd" strokeWidth="2" />
+            {/* Price Action bouncing inside */}
+            <path d="M 30 20 L 50 60 L 70 35 L 90 70 L 110 50 L 130 75" stroke="white" strokeWidth="1" fill="none" />
+            {/* Breakout */}
+            <line x1="130" y1="55" x2="160" y2="20" stroke="#00ffbd" strokeWidth="3" markerEnd="url(#arrowhead)" />
+        </svg>
+    ),
+    RisingWedge: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Upper Trendline (Shallow up) */}
+            <line x1="20" y1="80" x2="140" y2="40" stroke="#ef4444" strokeWidth="2" />
+            {/* Lower Trendline (Steep up) */}
+            <line x1="20" y1="90" x2="140" y2="50" stroke="#00ffbd" strokeWidth="2" />
+            {/* Price Action bouncing inside */}
+            <path d="M 30 85 L 50 82 L 70 60 L 90 75 L 110 55 L 130 65" stroke="white" strokeWidth="1" fill="none" />
+            {/* Breakdown */}
+            <line x1="130" y1="65" x2="160" y2="90" stroke="#ef4444" strokeWidth="3" markerEnd="url(#arrowhead-red)" />
+        </svg>
+    ),
+    Pennant: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Pole */}
+            <line x1="20" y1="90" x2="50" y2="20" stroke="#00ffbd" strokeWidth="3" />
+            {/* Converging Lines */}
+            <line x1="50" y1="20" x2="130" y2="50" stroke="gray" strokeWidth="2" />
+            <line x1="50" y1="80" x2="130" y2="50" stroke="gray" strokeWidth="2" />
+            {/* Price Action */}
+            <path d="M 50 20 L 70 70 L 90 35 L 110 60 L 125 50" stroke="white" strokeWidth="1" fill="none" />
+            {/* Breakout */}
+            <line x1="125" y1="50" x2="160" y2="10" stroke="#00ffbd" strokeWidth="3" markerEnd="url(#arrowhead)" />
+        </svg>
+    ),
     AscendingTriangle: () => (
         <svg viewBox="0 0 200 100" className="w-full h-full p-4">
             {/* Top Resistance */}
@@ -207,6 +274,32 @@ export const PatternSVGs = {
             <path d="M 10 70 Q 50 80 100 50 T 190 20" stroke="#00ffbd" strokeWidth="2" fill="none" />
             {/* Crossover Point Highlight */}
             <circle cx="155" cy="45" r="4" fill="white" fillOpacity="0.5" />
+        </svg>
+    ),
+    Fibonacci: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Trend */}
+            <line x1="20" y1="80" x2="180" y2="20" stroke="#white" strokeWidth="1" strokeDasharray="2 2" opacity="0.5" />
+            {/* Levels */}
+            <line x1="100" y1="20" x2="180" y2="20" stroke="#ef4444" strokeWidth="1" /> <text x="185" y="22" fontSize="6" fill="gray">0 (High)</text>
+            <line x1="100" y1="35" x2="180" y2="35" stroke="#ef4444" strokeWidth="1" /> <text x="185" y="37" fontSize="6" fill="gray">0.236</text>
+            <line x1="100" y1="45" x2="180" y2="45" stroke="yellow" strokeWidth="1" /> <text x="185" y="47" fontSize="6" fill="gray">0.382</text>
+            <line x1="100" y1="55" x2="180" y2="55" stroke="#00ffbd" strokeWidth="1" /> <text x="185" y="57" fontSize="6" fill="gray">0.5</text>
+            <line x1="100" y1="65" x2="180" y2="65" stroke="#00ffbd" strokeWidth="1" /> <text x="185" y="67" fontSize="6" fill="gray">0.618</text>
+            <line x1="100" y1="80" x2="180" y2="80" stroke="#ef4444" strokeWidth="1" /> <text x="185" y="82" fontSize="6" fill="gray">1 (Low)</text>
+        </svg>
+    ),
+    Stochastic: () => (
+        <svg viewBox="0 0 200 100" className="w-full h-full p-4">
+            {/* Zones */}
+            <rect x="10" y="20" width="180" height="60" fill="#ffffff" fillOpacity="0.05" />
+            <line x1="10" y1="30" x2="190" y2="30" stroke="#ef4444" strokeWidth="1" strokeDasharray="2 2" /> {/* 80 Overbought */}
+            <line x1="10" y1="70" x2="190" y2="70" stroke="#00ffbd" strokeWidth="1" strokeDasharray="2 2" /> {/* 20 Oversold */}
+
+            {/* %K Line (Fast) */}
+            <path d="M 10 60 Q 50 80 90 20 Q 140 10 190 70" stroke="#3b82f6" strokeWidth="2" fill="none" />
+            {/* %D Line (Slow) */}
+            <path d="M 10 65 Q 50 75 90 30 Q 140 20 190 65" stroke="#ef4444" strokeWidth="1" strokeDasharray="2 2" fill="none" />
         </svg>
     )
 }
